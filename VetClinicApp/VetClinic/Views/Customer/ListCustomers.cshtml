@@ -1,0 +1,93 @@
+﻿@model IEnumerable<VetClinic.Models.CustomerViewModel>
+
+@{
+	ViewData["Title"] = "Customer List";
+}
+
+<h1>Customer List</h1>
+
+<p>
+	<a class="btn btn-outline-primary btn-sm" asp-action="Create">Add New</a>
+</p>
+<div>
+	<ul class="pagination">
+		@{
+			char letter = 'A';
+			var query = ViewContext.HttpContext.Request.Query["beginsWith"].ToString();
+			for (int i = 0; i < 29; i++)
+			{
+				if (letter.ToString() == query)
+				{
+					<li class="page-item active">
+						<a class="page-link" asp-action="ListCustomers" asp-route-beginsWith="@letter">@letter</a>
+					</li>
+				}
+				else
+				{
+					<li class="page-item">
+						<a class="page-link" asp-action="ListCustomers" asp-route-beginsWith="@letter">@letter</a>
+					</li>
+
+				}
+				if (i < 25) letter++;
+				if (i == 25) letter = 'Å';
+				if (i == 26) letter = 'Ä';
+				if (i == 27) letter = 'Ö';
+			}
+			<li class="page-item">
+				<a class="page-link" asp-action="ListCustomers">ALL</a>
+			</li>
+		}
+	</ul>
+</div>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.FirstName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.LastName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.PhoneNumber)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Email)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr class="table-secondary">
+				<td>
+					@Html.DisplayFor(modelItem => item.FirstName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.LastName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.PhoneNumber)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Email)
+				</td>
+				<td>
+					<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+						<a asp-action="Details" asp-route-id=@item.Id class="btn btn-outline-info btn-sm">Details</a>
+						<div class="btn-group" role="group">
+							<button id="btnGroupDrop1" type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" control-id="ControlID-74"></button>
+							<div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+								<a class="dropdown-item" asp-action="Edit" asp-route-id=@item.Id>Edit</a>
+								<a class="dropdown-item" asp-action="Delete" asp-route-id=@item.Id>Delete</a>
+							</div>
+						</div>
+					</div>
+					<a class="btn btn-outline-primary btn-sm" asp-controller="Animal" asp-action="Create" asp-route-ownerId=@item.Id>Add Animal</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

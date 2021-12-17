@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetClinic", "VetClinic\VetClinic.csproj", "{C972A454-1BCC-4D92-A19B-61B4512C22BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDbAccess", "MongoDbAccess\MongoDbAccess.csproj", "{56F0CD1A-6D03-413A-BC9A-B434DACAA474}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C972A454-1BCC-4D92-A19B-61B4512C22BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C972A454-1BCC-4D92-A19B-61B4512C22BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C972A454-1BCC-4D92-A19B-61B4512C22BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C972A454-1BCC-4D92-A19B-61B4512C22BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56F0CD1A-6D03-413A-BC9A-B434DACAA474}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56F0CD1A-6D03-413A-BC9A-B434DACAA474}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56F0CD1A-6D03-413A-BC9A-B434DACAA474}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56F0CD1A-6D03-413A-BC9A-B434DACAA474}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CC1967F0-1DCC-4448-A4BE-1C77626285C1}
+	EndGlobalSection
+EndGlobal
