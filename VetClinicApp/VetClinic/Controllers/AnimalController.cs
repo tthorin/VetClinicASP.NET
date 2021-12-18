@@ -13,7 +13,7 @@ namespace VetClinic.Controllers
 
     public class AnimalController : Controller
     {
-        MongoDbAccess.Database.MongoDbAccess db = GetDataAccess();
+        private readonly MongoDbAccess.Database.MongoDbAccess db = GetDataAccess();
         // GET: AnimalController
         public ActionResult Index()
         {
@@ -42,7 +42,7 @@ namespace VetClinic.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (TempData.ContainsKey("ownerId") && TempData["ownerId"] != null) animal.OwnerId = TempData["ownerId"] as string;
+                if (TempData.ContainsKey("ownerId") && TempData["ownerId"] != null) animal.OwnerId = TempData["ownerId"] as string ?? "0";
                 var output = ToAnimal(animal);
                 await db.CreateAnimal(output);
                 return RedirectToAction("ListCustomers", "Customer");
@@ -74,7 +74,7 @@ namespace VetClinic.Controllers
         // GET: AnimalController/Delete/5
         public async Task<ActionResult> Delete(string id)
         {
-            var dbAnimal=await db.GetAnimalById(id);
+            var dbAnimal = await db.GetAnimalById(id);
             var viewAnimal = ToAnimalViewModel(dbAnimal);
             TempData["ownerId"] = viewAnimal.OwnerId;
             return View(viewAnimal);
@@ -85,9 +85,9 @@ namespace VetClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(AnimalViewModel animal)
         {
-            var ownerId = TempData["ownerId"].ToString();
-            await db.DeleteAnimalById(animal.Id,ownerId);
-            return RedirectToAction("Details", "Customer", new {id=ownerId});
+            var ownerId = TempData["ownerId"]?.ToString();
+            if (ownerId != null) await db.DeleteAnimalById(animal.Id, ownerId);
+            return RedirectToAction("Details", "Customer", new { id = ownerId });
         }
     }
 }

@@ -17,8 +17,8 @@ namespace MongoDbAccess.Database
         private readonly IFileHelper fileHelper;
         private readonly IJsonHelper jsonHelper;
         private readonly IMongoClient client;
-        private List<Customer> customerList;
-        private List<Animal> animalList;
+        private List<Customer> customerList = new();
+        private List<Animal> animalList = new();
         private int count;
 
         public DbSeeder(IConnectionStringHelper csh, IFileHelper fh, IJsonHelper jh)
@@ -29,10 +29,7 @@ namespace MongoDbAccess.Database
         }
         public async Task SeedDB()
         {
-            if (CheckIfDbExists() && CheckIfCustomerCollectionExists() && !IsCustomerCollectionEmpty())
-            {
-            }
-            else
+            if (!CheckIfDbExists() || !CheckIfCustomerCollectionExists() || IsCustomerCollectionEmpty())
             {
                 DoImports();
                 await InsertCustomersIntoDb();
@@ -60,7 +57,7 @@ namespace MongoDbAccess.Database
         {
             for (int i = 0; i < count; i++)
             {
-                customerList[i].Pets.Add(animalList.Where(x => x.OwnerId == customerList[i].Id).First());
+                customerList[i].Pets.Add(animalList.First(x => x.OwnerId == customerList[i].Id));
             }
         }
 
@@ -102,7 +99,7 @@ namespace MongoDbAccess.Database
 
         private string ImportAnimalsFile()
         {
-            var file = @"json\animals.json";
+            const string file = @"json\animals.json";
             return fileHelper.ReadAllFromFile(file);
         }
 
@@ -112,10 +109,9 @@ namespace MongoDbAccess.Database
             return jsonHelper.DeserializeList<Customer>(jsonCustomers);
         }
 
-
         private string ImportCustomersFile()
         {
-            string file = @"json\customers.json";
+            const string file = @"json\customers.json";
             return fileHelper.ReadAllFromFile(file);
         }
 

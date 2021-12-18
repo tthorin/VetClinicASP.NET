@@ -13,8 +13,8 @@ namespace VetClinic.Controllers
 
     public class CustomerController : Controller
     {
-        private MongoDbAccess.Database.MongoDbAccess db = MongoDbAccess.Factory.GetDataAccess();
-        private List<CustomerViewModel> owners = new();
+        readonly private MongoDbAccess.Database.MongoDbAccess db = MongoDbAccess.Factory.GetDataAccess();
+        readonly private List<CustomerViewModel> owners = new();
 
         // GET: PetOwnerController
         public ActionResult Index()
@@ -28,7 +28,7 @@ namespace VetClinic.Controllers
             if (beginsWith != null) data = await db.GetCustomersLastNameBeginsWith(beginsWith);
             else data = await db.GetAllCustomers();
 
-            var thisUrl = Request.QueryString.HasValue ? Request.QueryString.Value[^1].ToString() : "0";
+            var thisUrl = Request.QueryString.HasValue && Request.QueryString.Value != null ? Request.QueryString.Value[^1].ToString() : "A";
             ViewData["thisUrl"] = thisUrl;
 
             owners.Clear();

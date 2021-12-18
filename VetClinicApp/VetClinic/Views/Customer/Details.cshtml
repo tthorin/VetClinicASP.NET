@@ -35,7 +35,7 @@
 			@Html.DisplayFor(model => model.Email)
 		</dd>
 	</dl>
-	@if (Model.Pets.Count > 0)
+	@if (Model?.Pets.Count > 0)
 	{
 		<h5>Animals:</h5>
 		<dl class="row">
@@ -52,6 +52,6 @@
 	}
 </div>
 <div>
-	<a class="btn btn-outline-warning" asp-action="Edit" asp-route-id=@Model.Id>Edit</a>
-	<a class="btn btn-outline-primary" asp-action="ListCustomers" asp-route-beginsWith=@Model.LastName[..1]>Back to list</a>
+	<a class="btn btn-outline-warning" asp-action="Edit" asp-route-id=@Model?.Id>Edit</a>
+	<a class="btn btn-outline-primary" asp-action="ListCustomers" asp-route-beginsWith=@Model?.LastName[..1]>Back to list</a>
 </div>

@@ -15,7 +15,6 @@ namespace MongoDbAccess.Database
 
     public class MongoDbAccess
     {
-        private IConnectionStringHelper csh;
         private readonly string connectionString = "";
         internal const string databaseName = "TT-VetClinic";
         internal const string ownerCollection = "owners";
@@ -23,10 +22,8 @@ namespace MongoDbAccess.Database
 
         public MongoDbAccess(IConnectionStringHelper csh)
         {
-            this.csh = csh;
             connectionString = csh.ConnectionString;
         }
-
 
         private IMongoCollection<T> MongoConnect<T>(in string collection)
         {
@@ -34,7 +31,7 @@ namespace MongoDbAccess.Database
             var db = client.GetDatabase(databaseName);
             return db.GetCollection<T>(collection);
         }
-        
+
         public async Task<Animal> GetAnimalById(string id)
         {
             var collection = MongoConnect<Animal>(animalCollection);

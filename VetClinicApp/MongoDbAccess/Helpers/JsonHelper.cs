@@ -8,10 +8,8 @@
     {
         public List<T> DeserializeList<T>(string json)
         {
-            List<T> output = new();
-            output = JsonConvert.DeserializeObject<List<T>>(json);
+            List<T> output = JsonConvert.DeserializeObject<List<T>>(json) ?? new();
             return output;
         }
     }
-        
 }
