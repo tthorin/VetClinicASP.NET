@@ -1,7 +1,178 @@
-﻿
+﻿@model X.PagedList.IPagedList<VetClinic.Models.CustomerViewModel>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Customers";
 }
+<h1>Customer List</h1>
 
-<h1>Pet owner main page</h1>
 
+@{ string currentFilter = ViewData["CurrentFilter"] as string; }
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-outline-primary btn-sm" asp-action="Create">Add New</a>
+        </div>
+
+        <div class="col">
+            <form action="/Customer" method="get">
+                <div class="input-group">
+                    <label class="form-label col-form-label" for="SearchString">Find in either name: </label>
+                    <input class="form-control form-control-sm" id="SearchString" name="SearchString" type="text" value="@currentFilter"/>
+                    <input class="btn btn-outline-primary btn-sm" type="submit" value="Search"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>
+            @Html.ActionLink("First Name", "Index", new {sortOrder = ViewData["FirstNameSortParam"], currentFilter = ViewData["CurrentFilter"] as string})
+        </th>
+        <th>
+            @Html.ActionLink("Last Name", "Index", new {sortOrder = ViewData["LastNameSortParam"], currentFilter = ViewData["CurrentFilter"] as string})
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.FirstOrDefault().PhoneNumber)
+        </th>
+        <th>
+            EMail
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model != null)
+    {
+        int number = 0;
+        string btnGrp = "btnGroupDrop";
+        string combined = "";
+        foreach (var item in Model)
+        {
+            number++;
+            combined = btnGrp + number.ToString();
+            <tr class="table-secondary">
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Details</a>
+                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="visually-hidden">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Edit</a></li>
+                            
+                            <li><a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Delete</a></li>
+                            </ul>
+                  
+                    </div>
+                    <!-- 
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Details</a>
+                        <div class="btn-group" role="group">
+
+                            <button id="@combined" type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                            <div class="dropdown-menu" aria-labelledby="@combined" style="">
+                                <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                    <a class="btn btn-outline-primary btn-sm" asp-controller="Animal" asp-action="Create" asp-route-ownerId=@item.Id>Add Animal</a>
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
+<br/>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-end pagination-sm">
+        @{
+            if (Model.PageCount > 1)
+            {
+                if (Model.PageNumber == 1)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">First</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link">&laquo;</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="index" asp-route-page="1" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">First</a>
+                    </li>
+                    <li class="page-item">
+                        @{ int prev = @Model.PageNumber - 1; }
+                        <a class="page-link" asp-action="index" asp-route-page="@prev" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">&laquo;</a>
+                    </li>
+                }
+                int showTenPagesEnd = Model.PageNumber + 3 > Model.PageCount ? Model.PageCount : Model.PageNumber + 3;
+                int showTenPagesStart = Model.PageNumber - 3 < 1 ? 1 : Model.PageNumber - 3;
+                for (int i = showTenPagesStart; i <= showTenPagesEnd; i++)
+                {
+                    if (Model.PageNumber == i)
+                    {
+                        <li class="page-item active">
+                            <a class="page-link" asp-action="index" asp-route-page="@i" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@i</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="index" asp-route-page="@i" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@i</a>
+                        </li>
+                    }
+                }
+                if (Model.PageNumber == Model.PageCount)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">&raquo;</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        @{ int next = @Model.PageNumber + 1; }
+                        <a class="page-link" asp-action="index" asp-route-page="@next" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">&raquo;</a>
+                    </li>
+                    <li class="page-item">
+
+                        <a class="page-link" asp-action="index" asp-route-page="@Model.PageCount" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Last</a>
+                    </li>
+                }
+            }
+        }
+    </ul>
+</nav>
+<div class="btn-group">
+    <button type="button" class="btn btn-danger">Action</button>
+    <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="visually-hidden">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#">Separated link</a></li>
+    </ul>
+</div>
