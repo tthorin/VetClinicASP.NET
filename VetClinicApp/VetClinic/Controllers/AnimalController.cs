@@ -17,6 +17,7 @@ namespace VetClinic.Controllers
         // GET: AnimalController
         public ActionResult Index()
         {
+            var withoutAnnimals= db.GetCustomersWithoutAnimals();
             return View();
         }
 
@@ -31,7 +32,8 @@ namespace VetClinic.Controllers
         // GET: AnimalController/Create
         public ActionResult Create(string ownerId)
         {
-            if (ownerId != null) TempData["ownerId"] = ownerId;
+            if (!string.IsNullOrWhiteSpace(ownerId)) TempData["ownerId"] = ownerId;
+            
             return View();
         }
 
@@ -45,7 +47,8 @@ namespace VetClinic.Controllers
                 if (TempData.ContainsKey("ownerId") && TempData["ownerId"] != null) animal.OwnerId = TempData["ownerId"] as string ?? "0";
                 var output = ToAnimal(animal);
                 await db.CreateAnimal(output);
-                return RedirectToAction("ListCustomers", "Customer");
+                ViewData["Success"] = $"Animal {animal.Name} added successfully.";
+                return View();
             }
             return View(animal);
         }

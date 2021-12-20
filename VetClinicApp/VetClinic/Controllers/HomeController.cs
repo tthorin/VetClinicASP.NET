@@ -13,8 +13,10 @@
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            MongoDbAccess.Database.DbSeeder dbs = MongoDbAccess.Factory.GetDbSeeder();
+            await dbs.SeedDB();
             return View();
         }
 

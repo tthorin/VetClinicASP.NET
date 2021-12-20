@@ -6,10 +6,12 @@
 namespace VetClinic.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.RazorPages;
     using MongoDbAccess.Models;
-    using VetClinic.Models;
-    using static VetClinic.Mapper.ModelMapper;
+    using Models;
+    using static Mapper.ModelMapper;
+    using System.Linq;
+    //using PagedList;
+    using X.PagedList;
 
     public class CustomerController : Controller
     {
@@ -17,18 +19,48 @@ namespace VetClinic.Controllers
         readonly private List<CustomerViewModel> owners = new();
 
         // GET: PetOwnerController
-        public ActionResult Index()
+        public async Task<ActionResult> Index(string sortOrder,string currentFilter, string searchString,int? page)
         {
-            return View();
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["LastNameSortParam"] = string.IsNullOrEmpty(sortOrder) ? "lastName_desc" : "";
+            ViewData["FirstNameSortParam"] = sortOrder == "firstName" ? "firstName_desc" : "firstName";
+            if (searchString != null) page = 1;
+            else searchString = currentFilter;
+            ViewData["CurrentFilter"] = searchString;
+
+            List<Customer> data = string.IsNullOrEmpty(searchString)
+                ? await db.GetAllCustomers()
+                : await db.GetCustomersEitherNameBeginsWith(searchString);
+            data = sortOrder switch
+            {
+                "lastName_desc" => data.OrderByDescending(x => x.LastName).ToList(),
+                "firstName" => data.OrderBy(x => x.FirstName).ToList(),
+                "firstName_desc" => data.OrderByDescending(x => x.FirstName).ToList(),
+                _ => data.OrderBy(x => x.LastName).ToList()
+            };
+
+            List<CustomerViewModel> customers = new();
+            foreach (var item in data)
+            {
+                customers.Add(ToCustomerViewModel(item));
+            }
+
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+
+            return View(customers.ToPagedList(pageNumber,pageSize));
+            
         }
 
         public async Task<ActionResult> ListCustomers(string beginsWith)
         {
             List<Customer> data = new();
-            if (beginsWith != null) data = await db.GetCustomersLastNameBeginsWith(beginsWith);
+            if (beginsWith != null) data = await db.GetCustomersEitherNameBeginsWith(beginsWith);
             else data = await db.GetAllCustomers();
 
-            var thisUrl = Request.QueryString.HasValue && Request.QueryString.Value != null ? Request.QueryString.Value[^1].ToString() : "A";
+            var thisUrl = Request.QueryString.HasValue && Request.QueryString.Value != null
+                ? Request.QueryString.Value[^1].ToString()
+                : "A";
             ViewData["thisUrl"] = thisUrl;
 
             owners.Clear();
@@ -36,6 +68,7 @@ namespace VetClinic.Controllers
             {
                 owners.Add(ToCustomerViewModel(item));
             }
+
             return View(owners);
         }
 
@@ -59,12 +92,10 @@ namespace VetClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CustomerViewModel owner)
         {
-            if (ModelState.IsValid)
-            {
-                var result = ToCustomer(owner);
-                await db.CreateOwner(result);
-                return RedirectToAction(nameof(ListCustomers));
-            }
+            if (!ModelState.IsValid) return View();
+            var result = ToCustomer(owner);
+            await db.CreateOwner(result);
+            ViewData["Success"] = $"User {owner.FirstName} {owner.LastName} added successfully.";
             return View();
         }
 
@@ -73,7 +104,6 @@ namespace VetClinic.Controllers
         {
             var data = await db.GetCustomerById(id);
             var editPerson = ToCustomerViewModel(data);
-            if (editPerson.Pets?.Count > 0) TempData["Pets"] = 1;
             return View(editPerson);
         }
 
@@ -84,16 +114,12 @@ namespace VetClinic.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (TempData.ContainsKey("Pets"))
-                {
-                    var _ = TempData["Pets"];
-                    var containsPets = await db.GetCustomerById(owner.Id);
-                    owner.Pets = containsPets.Pets;
-                }
                 var reMapped = ToCustomer(owner);
                 await db.UpdateCustomer(reMapped);
-                return RedirectToAction(nameof(ListCustomers));
+                ViewData["Success"] = $"User {owner.FirstName} {owner.LastName} updated successfully.";
+                return View();
             }
+
             if (owner.Pets?.Count > 0) TempData["Pets"] = owner.Pets;
             return View(owner);
         }
