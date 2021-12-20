@@ -54,7 +54,6 @@ namespace MongoDbAccess.Database
         public async Task<List<Customer>> GetCustomersEitherNameBeginsWith(string beginsWith)
         {
             var collection = MongoConnect<Customer>(OwnerCollection);
-            //var result = await collection.FindAsync(x => x.LastName.ToLower().StartsWith(beginsWith));
             var result = await collection.FindAsync(x =>
                 x.LastName.ToLower().StartsWith(beginsWith.ToLower()) ||
                 x.FirstName.ToLower().StartsWith(beginsWith.ToLower()));
