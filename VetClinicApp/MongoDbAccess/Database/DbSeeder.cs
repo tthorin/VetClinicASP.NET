@@ -41,16 +41,16 @@ namespace MongoDbAccess.Database
         }
 
         private async Task UpdateCustomersInDb()
-        {
-            List<Task> tasks = new();
-            var db = client.GetDatabase(MongoDbAccess.databaseName);
-            var collection = db.GetCollection<Customer>(MongoDbAccess.ownerCollection);
+        {   
+            var db = client.GetDatabase(MongoDbAccess.DatabaseName);
+            var collection = db.GetCollection<Customer>(MongoDbAccess.OwnerCollection);
+            var bulkReplace = new List<WriteModel<Customer>>();
             foreach (var customer in customerList.Take(count))
             {
                 var filter = Builders<Customer>.Filter.Eq("Id", customer.Id);
-                tasks.Add(collection.ReplaceOneAsync(filter, customer, new ReplaceOptions { IsUpsert = true }));
+                bulkReplace.Add(new ReplaceOneModel<Customer>(filter, customer) { IsUpsert = true });
             }
-            await Task.WhenAll(tasks);
+            await collection.BulkWriteAsync(bulkReplace);
         }
 
         private void MatchAndAddAnimalsToCustomers()
@@ -59,13 +59,15 @@ namespace MongoDbAccess.Database
             {
                 customerList[i].Pets.Add(animalList.First(x => x.OwnerId == customerList[i].Id));
             }
+            var noPet = customerList.Where(x => x.Pets.Count == 0).ToList();
         }
 
         private async Task InsertAnimalsIntoDb()
         {
-            var db = client.GetDatabase(MongoDbAccess.databaseName);
-            var collection = db.GetCollection<Animal>(MongoDbAccess.animalCollection);
+            var db = client.GetDatabase(MongoDbAccess.DatabaseName);
+            var collection = db.GetCollection<Animal>(MongoDbAccess.AnimalCollection);
             await collection.InsertManyAsync(animalList.Take(count));
+            var noId = animalList.Where(x => string.IsNullOrEmpty(x.Id)).ToList();
         }
 
         private void UpdateAnimalsWithOwnerId()
@@ -76,13 +78,15 @@ namespace MongoDbAccess.Database
             {
                 animalList[i].OwnerId = customerList[i].Id;
             }
+            var noOwner = animalList.Where(x => string.IsNullOrEmpty(x.OwnerId)).ToList();
         }
 
         private async Task InsertCustomersIntoDb()
         {
-            var db = client.GetDatabase(MongoDbAccess.databaseName);
-            var collection = db.GetCollection<Customer>(MongoDbAccess.ownerCollection);
+            var db = client.GetDatabase(MongoDbAccess.DatabaseName);
+            var collection = db.GetCollection<Customer>(MongoDbAccess.OwnerCollection);
             await collection.InsertManyAsync(customerList);
+            var noId = customerList.Where(x => string.IsNullOrEmpty(x.Id)).ToList();
         }
 
         private void DoImports()
@@ -117,21 +121,21 @@ namespace MongoDbAccess.Database
 
         private bool IsCustomerCollectionEmpty()
         {
-            var db = client.GetDatabase(MongoDbAccess.databaseName);
-            var collection = db.GetCollection<Customer>(MongoDbAccess.ownerCollection);
+            var db = client.GetDatabase(MongoDbAccess.DatabaseName);
+            var collection = db.GetCollection<Customer>(MongoDbAccess.OwnerCollection);
             return collection.EstimatedDocumentCount() == 0;
         }
 
         private bool CheckIfCustomerCollectionExists()
         {
-            var db = client.GetDatabase(MongoDbAccess.databaseName);
-            return db.ListCollectionNames().ToList().Contains(MongoDbAccess.ownerCollection);
+            var db = client.GetDatabase(MongoDbAccess.DatabaseName);
+            return db.ListCollectionNames().ToList().Contains(MongoDbAccess.OwnerCollection);
         }
 
         private bool CheckIfDbExists()
         {
             var dbList = client.ListDatabases().ToList().Select(db => db.GetValue("name").AsString);
-            return dbList.Contains(MongoDbAccess.databaseName);
+            return dbList.Contains(MongoDbAccess.DatabaseName);
         }
     }
 }

@@ -3,6 +3,13 @@
 @{
 	ViewData["Title"] = "Add Animal";
 }
+@if (!string.IsNullOrEmpty(ViewData["Success"] as string))
+{
+    <div class="alert alert-dismissible alert-success">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <strong>Animal added.</strong>
+    </div>
+}
 
 <h1>Add</h1>
 
