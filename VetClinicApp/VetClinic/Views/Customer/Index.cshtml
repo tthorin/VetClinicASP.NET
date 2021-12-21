@@ -1,4 +1,5 @@
 ﻿@model X.PagedList.IPagedList<VetClinic.Models.CustomerViewModel>
+
 @{
     ViewData["Title"] = "Customers";
 }
@@ -15,7 +16,7 @@
         <div class="col">
             <form action="/Customer" method="get">
                 <div class="input-group">
-                    <label class="form-label col-form-label" for="SearchString">Find in either name: </label>
+                    <label class="form-label col-form-label" for="SearchString">Search first or last name:</label>
                     <input class="form-control form-control-sm" id="SearchString" name="SearchString" type="text" value="@currentFilter"/>
                     <input class="btn btn-outline-primary btn-sm" type="submit" value="Search"/>
                 </div>
@@ -67,31 +68,7 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    <div class="btn-group">
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Details</a>
-                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Edit</a></li>
-                            
-                            <li><a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Delete</a></li>
-                            </ul>
-                  
-                    </div>
-                    <!-- 
-                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Details</a>
-                        <div class="btn-group" role="group">
-
-                            <button id="@combined" type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                            <div class="dropdown-menu" aria-labelledby="@combined" style="">
-                                <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                                <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                            </div>
-                        </div>
-                    </div>
-                    -->
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Details</a>
                     <a class="btn btn-outline-primary btn-sm" asp-controller="Animal" asp-action="Create" asp-route-ownerId=@item.Id>Add Animal</a>
                 </td>
             </tr>
@@ -163,16 +140,3 @@ Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.Page
         }
     </ul>
 </nav>
-<div class="btn-group">
-    <button type="button" class="btn btn-danger">Action</button>
-    <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="visually-hidden">Toggle Dropdown</span>
-    </button>
-    <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">Action</a></li>
-        <li><a class="dropdown-item" href="#">Another action</a></li>
-        <li><a class="dropdown-item" href="#">Something else here</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#">Separated link</a></li>
-    </ul>
-</div>
