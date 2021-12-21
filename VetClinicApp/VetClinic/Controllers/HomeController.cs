@@ -30,5 +30,12 @@
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        public async Task<IActionResult> About()
+        {
+            var db=MongoDbAccess.Factory.GetDataAccess();
+            (int customers,int animals)=await db.GetDbStats();
+            DbInformation dbStats = new() { Customers=customers,Animals=animals};
+            return View(dbStats);
+        }
     }
 }

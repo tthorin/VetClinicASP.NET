@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
-    var returnToListValue = string.IsNullOrEmpty(Model.LastName)||Model.LastName.Length<2 ? "a" : Model.LastName[..2];
+    var returnToListValue = string.IsNullOrEmpty(Model.LastName)||Model.LastName.Length<2 ? "" : Model.LastName[..2];
 }
 @if (!string.IsNullOrEmpty(ViewData["Success"] as string))
 {

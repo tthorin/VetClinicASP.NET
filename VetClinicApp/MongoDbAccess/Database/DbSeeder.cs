@@ -65,7 +65,7 @@ namespace MongoDbAccess.Database
         private async Task InsertAnimalsIntoDb()
         {
             var db = client.GetDatabase(MongoDbAccess.DatabaseName);
-            var collection = db.GetCollection<Animal>(MongoDbAccess.AnimalCollection);
+            var collection = db.GetCollection<Animal>(MongoDbAccess.PetCollection);
             await collection.InsertManyAsync(animalList.Take(count));
             var noId = animalList.Where(x => string.IsNullOrEmpty(x.Id)).ToList();
         }

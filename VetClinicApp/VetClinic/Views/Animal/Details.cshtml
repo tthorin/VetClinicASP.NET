@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
-    string backToListValue = !string.IsNullOrEmpty(Model.Name) && Model.Name.Length >=2?Model.Name[..2]:"a";
+    string backToListValue = !string.IsNullOrEmpty(Model?.Name) && Model.Name.Length >=2?Model.Name[..2]:"";
 }
 
 <h1>Details</h1>

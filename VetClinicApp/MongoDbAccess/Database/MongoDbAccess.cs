@@ -18,7 +18,9 @@ namespace MongoDbAccess.Database
         private readonly string connectionString;
         internal const string DatabaseName = "TT-VetClinic";
         internal const string OwnerCollection = "owners";
-        internal const string AnimalCollection = "animals";
+        internal const string PetCollection = "animals";
+        public IMongoCollection<Customer> CustomerCollection { get => MongoConnect<Customer>(OwnerCollection); }
+        public IMongoCollection<Animal> AnimalCollection { get => MongoConnect<Animal>(PetCollection); }
 
         public MongoDbAccess(IConnectionStringHelper csh)
         {
@@ -32,45 +34,47 @@ namespace MongoDbAccess.Database
             return db.GetCollection<T>(collection);
         }
 
-        public async Task<Animal> GetAnimalById(string id)
+        public async Task<(int customers, int animals)> GetDbStats()
         {
-            var collection = MongoConnect<Animal>(AnimalCollection);
-            var output = await collection.FindAsync(x => x.Id == id);
+            var customerCount = await CustomerCollection.EstimatedDocumentCountAsync();
+            var animalCount = await AnimalCollection.EstimatedDocumentCountAsync();
+            return ((int)customerCount, (int)animalCount);
+        }
+
+        public async Task<Animal> GetAnimalById(string id)
+        {   
+            var output = await AnimalCollection.FindAsync(x => x.Id == id);
             return output.FirstOrDefault();
         }
 
         public async Task<List<Animal>> GetAnimalsByNameBeginsWith(string searchString)
         {
-            var collection = MongoConnect<Animal>(AnimalCollection);
-            var result = await collection.FindAsync(x =>
+            
+            var result = await AnimalCollection.FindAsync(x =>
                 x.Name.ToLower().StartsWith(searchString.ToLower()));
             return result.ToList();
         }
 
         public async Task<List<Animal>> GetAllAnimal()
         {
-            var collection = MongoConnect<Animal>(AnimalCollection);
-            var result = await collection.FindAsync(_ => true);
+            var result = await AnimalCollection.FindAsync(_ => true);
             return result.ToList();
         }
 
         public Task CreateOwner(Customer owner)
         {
-            var collection = MongoConnect<Customer>(OwnerCollection);
-            return collection.InsertOneAsync(owner);
+            return CustomerCollection.InsertOneAsync(owner);
         }
 
         public async Task<List<Customer>> GetAllCustomers()
         {
-            var collection = MongoConnect<Customer>(OwnerCollection);
-            var result = await collection.FindAsync(_ => true);
+            var result = await CustomerCollection.FindAsync(_ => true);
             return result.ToList();
         }
 
         public async Task<List<Customer>> GetCustomersEitherNameBeginsWith(string beginsWith)
         {
-            var collection = MongoConnect<Customer>(OwnerCollection);
-            var result = await collection.FindAsync(x =>
+            var result = await CustomerCollection.FindAsync(x =>
                 x.LastName.ToLower().StartsWith(beginsWith.ToLower()) ||
                 x.FirstName.ToLower().StartsWith(beginsWith.ToLower()));
             return result.ToList();
@@ -78,44 +82,45 @@ namespace MongoDbAccess.Database
 
         public async Task CreateAnimal(Animal animal)
         {
-            var collection = MongoConnect<Animal>(AnimalCollection);
-            await collection.InsertOneAsync(animal);
+            await AnimalCollection.InsertOneAsync(animal);
             await CustomerHelper.AddAnimalToCustomer(animal);
         }
 
         public async Task<Customer> GetCustomerById(string id)
         {
-            var collection = MongoConnect<Customer>(OwnerCollection);
             var filter = Builders<Customer>.Filter.Eq("Id", id);
-            var output = await collection.FindAsync(filter);
+            var output = await CustomerCollection.FindAsync(filter);
             return output.FirstOrDefault();
         }
 
-        public async Task DeleteAnimalById(string animalId, string ownerId)
+        public async Task UpdateAnimal(Animal animal)
         {
-            var collection = MongoConnect<Animal>(AnimalCollection);
-            await collection.DeleteOneAsync(x => x.Id == animalId);
-            await CustomerHelper.RemoveAnimalFromCustomer(animalId, ownerId);
+            var filter = Builders<Animal>.Filter.Eq("Id", animal.Id);
+            await AnimalCollection.ReplaceOneAsync(filter, animal, new ReplaceOptions { IsUpsert = true });
+            await CustomerHelper.UpdateAnimalOnCustomer(animal);
+        }
+
+        public async Task DeleteAnimalById(Animal animal)
+        {
+            await AnimalCollection.DeleteOneAsync(x => x.Id == animal.Id);
+            await CustomerHelper.RemoveAnimalFromCustomer(animal);
         }
 
         public Task UpdateCustomer(Customer owner)
         {
-            var collection = MongoConnect<Customer>(OwnerCollection);
             var filter = Builders<Customer>.Filter.Eq("Id", owner.Id);
-            return collection.ReplaceOneAsync(filter, owner, new ReplaceOptions {IsUpsert = true});
+            return CustomerCollection.ReplaceOneAsync(filter, owner, new ReplaceOptions {IsUpsert = true});
         }
 
         public Task DeleteCustomerById(string id)
         {
-            var collection = MongoConnect<Customer>(OwnerCollection);
-            return collection.DeleteOneAsync(x => x.Id == id);
+            return CustomerCollection.DeleteOneAsync(x => x.Id == id);
         }
 
         public List<Customer> GetCustomersWithoutAnimals()
         {
-            var collection = MongoConnect<Customer>(OwnerCollection);
             var filter = Builders<Customer>.Filter.Eq("Pets.Count",0);
-            var output = collection.AsQueryable().Where(x => x.Pets.Count == 0).ToList();
+            var output = CustomerCollection.AsQueryable().Where(x => x.Pets.Count == 0).ToList();
             return output.ToList();
         }
     }

@@ -26,7 +26,7 @@ namespace VetClinic.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             List<Animal> data = string.IsNullOrEmpty(searchString)
-                ? await db.GetAllAnimal()
+                ? await db.GetAnimalsByNameBeginsWith("a")
                 : await db.GetAnimalsByNameBeginsWith(searchString);
             data = sortOrder switch
             {
@@ -58,9 +58,8 @@ namespace VetClinic.Controllers
         // GET: AnimalController/Create
         public ActionResult Create(string ownerId)
         {
-            if (!string.IsNullOrWhiteSpace(ownerId)) TempData["ownerId"] = ownerId;
-
-            return View();
+            var createAnimal = new AnimalViewModel() { OwnerId = ownerId };
+            return View(createAnimal);
         }
 
         // POST: AnimalController/Create
@@ -70,34 +69,33 @@ namespace VetClinic.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (TempData.ContainsKey("ownerId") && TempData["ownerId"] != null) animal.OwnerId = TempData["ownerId"] as string ?? "0";
                 var output = ToAnimal(animal);
                 await db.CreateAnimal(output);
                 ViewData["Success"] = $"Animal {animal.Name} added successfully.";
-                return View();
+                return View(animal);
             }
             return View(animal);
         }
 
         // GET: AnimalController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(string id)
         {
-            return View();
+            var viewAnimal = ToAnimalViewModel(await db.GetAnimalById(id));
+            
+            return View(viewAnimal);
         }
 
         // POST: AnimalController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(AnimalViewModel viewAnimal)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                await db.UpdateAnimal(ToAnimal(viewAnimal));
+                ViewData["Success"] = $"Animal updated.";
             }
-            catch
-            {
-                return View();
-            }
+            return View(viewAnimal);
         }
 
         // GET: AnimalController/Delete/5
@@ -105,7 +103,8 @@ namespace VetClinic.Controllers
         {
             var dbAnimal = await db.GetAnimalById(id);
             var viewAnimal = ToAnimalViewModel(dbAnimal);
-            TempData["ownerId"] = viewAnimal.OwnerId;
+            ViewData["OwnerId"] = viewAnimal.OwnerId;
+            //TempData["ownerId"] = viewAnimal.OwnerId;
             return View(viewAnimal);
         }
 
@@ -114,9 +113,13 @@ namespace VetClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(AnimalViewModel animal)
         {
-            var ownerId = TempData["ownerId"]?.ToString();
-            if (ownerId != null) await db.DeleteAnimalById(animal.Id, ownerId);
-            return RedirectToAction("Details", "Customer", new { id = ownerId });
+            //var ownerId = TempData["ownerId"]?.ToString();
+            if (animal.OwnerId != null)
+            {
+                await db.DeleteAnimalById(ToAnimal(animal));
+                ViewData["Success"] = $"Animal deleted.";
+            }
+            return View();
         }
     }
 }
