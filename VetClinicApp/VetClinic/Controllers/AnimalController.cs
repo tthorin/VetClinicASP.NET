@@ -7,7 +7,9 @@ namespace VetClinic.Controllers
 {
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using MongoDbAccess.Models;
     using VetClinic.Models;
+    using X.PagedList;
     using static Mapper.ModelMapper;
     using static MongoDbAccess.Factory;
 
@@ -15,10 +17,34 @@ namespace VetClinic.Controllers
     {
         private readonly MongoDbAccess.Database.MongoDbAccess db = GetDataAccess();
         // GET: AnimalController
-        public ActionResult Index()
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var withoutAnnimals= db.GetCustomersWithoutAnimals();
-            return View();
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParam"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            if (searchString != null) page = 1;
+            else searchString = currentFilter;
+            ViewData["CurrentFilter"] = searchString;
+
+            List<Animal> data = string.IsNullOrEmpty(searchString)
+                ? await db.GetAllAnimal()
+                : await db.GetAnimalsByNameBeginsWith(searchString);
+            data = sortOrder switch
+            {
+                "name_desc" => data.OrderByDescending(x => x.Name).ToList(),
+                _ => data.OrderBy(x => x.Name).ToList()
+            };
+
+            List<AnimalViewModel> animals = new();
+            foreach (var animal in data)
+            {
+                animals.Add(ToAnimalViewModel(animal));
+            }
+
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+
+            return View(animals.ToPagedList(pageNumber, pageSize));
+
         }
 
         // GET: AnimalController/Details/5
@@ -33,7 +59,7 @@ namespace VetClinic.Controllers
         public ActionResult Create(string ownerId)
         {
             if (!string.IsNullOrWhiteSpace(ownerId)) TempData["ownerId"] = ownerId;
-            
+
             return View();
         }
 

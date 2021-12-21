@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    string backToListValue = !string.IsNullOrEmpty(Model.LastName) && Model.LastName.Length >=2?Model.LastName[..2]:"a";
 }
 
 <h1>Details</h1>
@@ -57,7 +58,7 @@
 <div>
     <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model?.Id">Delete</a>
-    <a class="btn btn-outline-primary" asp-action="Index" asp-route-searchString="@Model?.LastName[..1]">Back to list</a>
+    <a class="btn btn-outline-primary" asp-action="Index" asp-route-searchString="@backToListValue">Back to list</a>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="animalInfoModal" tabindex="-1" aria-labelledby="animalInfoModalLabel" aria-hidden="true">

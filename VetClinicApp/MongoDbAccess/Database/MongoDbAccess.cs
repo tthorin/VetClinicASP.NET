@@ -11,6 +11,7 @@ namespace MongoDbAccess.Database
     using MongoDB.Driver;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System;
 
     public class MongoDbAccess
     {
@@ -36,6 +37,21 @@ namespace MongoDbAccess.Database
             var collection = MongoConnect<Animal>(AnimalCollection);
             var output = await collection.FindAsync(x => x.Id == id);
             return output.FirstOrDefault();
+        }
+
+        public async Task<List<Animal>> GetAnimalsByNameBeginsWith(string searchString)
+        {
+            var collection = MongoConnect<Animal>(AnimalCollection);
+            var result = await collection.FindAsync(x =>
+                x.Name.ToLower().StartsWith(searchString.ToLower()));
+            return result.ToList();
+        }
+
+        public async Task<List<Animal>> GetAllAnimal()
+        {
+            var collection = MongoConnect<Animal>(AnimalCollection);
+            var result = await collection.FindAsync(_ => true);
+            return result.ToList();
         }
 
         public Task CreateOwner(Customer owner)
