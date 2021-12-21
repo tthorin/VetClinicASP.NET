@@ -116,7 +116,7 @@ namespace VetClinic.Controllers
             //var ownerId = TempData["ownerId"]?.ToString();
             if (animal.OwnerId != null)
             {
-                await db.DeleteAnimalById(ToAnimal(animal));
+                await db.DeleteAnimal(ToAnimal(animal));
                 ViewData["Success"] = $"Animal deleted.";
             }
             return View();

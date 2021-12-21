@@ -100,7 +100,7 @@ namespace MongoDbAccess.Database
             await CustomerHelper.UpdateAnimalOnCustomer(animal);
         }
 
-        public async Task DeleteAnimalById(Animal animal)
+        public async Task DeleteAnimal(Animal animal)
         {
             await AnimalCollection.DeleteOneAsync(x => x.Id == animal.Id);
             await CustomerHelper.RemoveAnimalFromCustomer(animal);
