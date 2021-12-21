@@ -117,10 +117,8 @@ namespace VetClinic.Controllers
                 var reMapped = ToCustomer(owner);
                 await db.UpdateCustomer(reMapped);
                 ViewData["Success"] = $"User {owner.FirstName} {owner.LastName} updated successfully.";
-                return View();
+                return View(owner);
             }
-
-            if (owner.Pets?.Count > 0) TempData["Pets"] = owner.Pets;
             return View(owner);
         }
 
@@ -138,7 +136,8 @@ namespace VetClinic.Controllers
         public async Task<ActionResult> Delete(CustomerViewModel ownerToDelete)
         {
             await db.DeleteCustomerById(ownerToDelete.Id);
-            return RedirectToAction(nameof(ListCustomers));
+            ViewData["Success"] = $"User {ownerToDelete.FirstName} {ownerToDelete.LastName} deleted.";
+            return View();
         }
     }
 }
