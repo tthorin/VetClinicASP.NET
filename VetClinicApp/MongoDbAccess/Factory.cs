@@ -43,7 +43,6 @@ namespace MongoDbAccess
         }
         internal static IConnectionStringHelper GetConnectionStringHelper()
         {
-            
             return ConnectionStringHelper.Instance;
         }
     }

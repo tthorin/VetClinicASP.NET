@@ -38,11 +38,10 @@ namespace VetClinic.Controllers
                 animals.Add(ToAnimalViewModel(animal));
             }
 
-            int pageSize = 8;
+            const int pageSize = 8;
             int pageNumber = (page ?? 1);
 
             return View(animals.ToPagedList(pageNumber, pageSize));
-
         }
 
         // GET: AnimalController/Details/5
@@ -91,7 +90,7 @@ namespace VetClinic.Controllers
             if (ModelState.IsValid)
             {
                 await db.UpdateAnimal(ToAnimal(viewAnimal));
-                ViewData["Success"] = $"Animal updated.";
+                ViewData["Success"] = "Animal updated.";
             }
             return View(viewAnimal);
         }
@@ -114,7 +113,7 @@ namespace VetClinic.Controllers
             if (animal.OwnerId != null)
             {
                 await db.DeleteAnimal(ToAnimal(animal));
-                ViewData["Success"] = $"Animal deleted.";
+                ViewData["Success"] = "Animal deleted.";
             }
             return View();
         }

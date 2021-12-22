@@ -7,11 +7,12 @@ namespace MongoDbAccess.Helpers
 {
     using Database;
     using Models;
+    using MongoDbAccess.Interfaces;
     using System;
 
     internal static class CustomerHelper
     {
-        static readonly MongoDbAccess db = Factory.GetDataAccess();
+        private static readonly ICustomerCrud db = Factory.GetICustomerCrud();
         internal static async Task AddAnimalToCustomer(Animal animal)
         {
             var owner = await db.GetCustomerById(animal.OwnerId);

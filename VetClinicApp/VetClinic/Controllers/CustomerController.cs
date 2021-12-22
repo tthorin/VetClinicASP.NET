@@ -16,7 +16,6 @@ namespace VetClinic.Controllers
     public class CustomerController : Controller
     {
         readonly private MongoDbAccess.Interfaces.ICustomerCrud db = MongoDbAccess.Factory.GetICustomerCrud();
-        readonly private List<CustomerViewModel> owners = new();
 
         // GET: PetOwnerController
         public async Task<ActionResult> Index(string sortOrder,string currentFilter, string searchString,int? page)
@@ -45,11 +44,10 @@ namespace VetClinic.Controllers
                 customers.Add(ToCustomerViewModel(item));
             }
 
-            int pageSize = 8;
+            const int pageSize = 8;
             int pageNumber = (page ?? 1);
 
             return View(customers.ToPagedList(pageNumber,pageSize));
-            
         }
 
         // GET: PetOwnerController/Details/5

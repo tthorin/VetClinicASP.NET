@@ -66,9 +66,11 @@ namespace MongoDbAccess.Database
 
             var customerIndexBuilder = Builders<Customer>.IndexKeys;
 
-            var indexList = new List<CreateIndexModel<Customer>>();
-            indexList.Add(new CreateIndexModel<Customer>(customerIndexBuilder.Ascending(x => x.FirstName)));
-            indexList.Add(new CreateIndexModel<Customer>(customerIndexBuilder.Ascending(x => x.LastName)));
+            var indexList = new List<CreateIndexModel<Customer>>
+            {
+                new CreateIndexModel<Customer>(customerIndexBuilder.Ascending(x => x.FirstName)),
+                new CreateIndexModel<Customer>(customerIndexBuilder.Ascending(x => x.LastName))
+            };
 
             await ownerCollection.Indexes.CreateManyAsync(indexList);
         }

@@ -49,9 +49,8 @@ namespace MongoDbAccess.Database
 
         public async Task<List<Animal>> GetAnimalsByNameBeginsWith(string searchString)
         {
-
             var result = await AnimalCollection.FindAsync(x =>
-                x.Name.ToLower().StartsWith(searchString.ToLower()));
+                x.Name.StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase));
             return result.ToList();
         }
 
@@ -75,8 +74,8 @@ namespace MongoDbAccess.Database
         public async Task<List<Customer>> GetCustomersEitherNameBeginsWith(string beginsWith)
         {
             var result = await CustomerCollection.FindAsync(x =>
-                x.LastName.ToLower().StartsWith(beginsWith.ToLower()) ||
-                x.FirstName.ToLower().StartsWith(beginsWith.ToLower()));
+                x.LastName.StartsWith(beginsWith, StringComparison.CurrentCultureIgnoreCase) ||
+                x.FirstName.StartsWith(beginsWith, StringComparison.CurrentCultureIgnoreCase));
             return result.ToList();
         }
 
