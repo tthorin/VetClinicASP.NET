@@ -6,16 +6,9 @@
 
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         public async Task<IActionResult> Index()
         {
-            MongoDbAccess.Database.DbSeeder dbs = MongoDbAccess.Factory.GetDbSeeder();
+            var dbs = MongoDbAccess.Factory.GetIDbSeeder();
             await dbs.SeedDB();
             return View();
         }
@@ -32,7 +25,7 @@
         }
         public async Task<IActionResult> About()
         {
-            var db=MongoDbAccess.Factory.GetDataAccess();
+            var db=MongoDbAccess.Factory.GetIDbstats();
             (int customers,int animals)=await db.GetDbStats();
             DbInformation dbStats = new() { Customers=customers,Animals=animals};
             return View(dbStats);

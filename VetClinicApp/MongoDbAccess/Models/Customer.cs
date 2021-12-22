@@ -7,10 +7,9 @@ namespace MongoDbAccess.Models
 {
     using MongoDB.Bson;
     using MongoDB.Bson.Serialization.Attributes;
-    using MongoDbAccess.Interfaces;
     using System.Collections.Generic;
 
-    public class Customer : IPetOwner
+    public class Customer
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

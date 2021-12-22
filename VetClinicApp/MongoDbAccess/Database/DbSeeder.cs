@@ -11,9 +11,8 @@ namespace MongoDbAccess.Database
     using System;
     using static Factory;
     using System.Collections.Generic;
-    using MongoDB.Bson;
 
-    public class DbSeeder
+    public class DbSeeder : IDbSeeder
     {
         private readonly IFileHelper fileHelper;
         private readonly IJsonHelper jsonHelper;

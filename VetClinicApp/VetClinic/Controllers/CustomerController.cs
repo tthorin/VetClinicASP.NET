@@ -15,7 +15,7 @@ namespace VetClinic.Controllers
 
     public class CustomerController : Controller
     {
-        readonly private MongoDbAccess.Database.MongoDbAccess db = MongoDbAccess.Factory.GetDataAccess();
+        readonly private MongoDbAccess.Interfaces.ICustomerCrud db = MongoDbAccess.Factory.GetICustomerCrud();
         readonly private List<CustomerViewModel> owners = new();
 
         // GET: PetOwnerController
@@ -74,7 +74,7 @@ namespace VetClinic.Controllers
         {
             if (!ModelState.IsValid) return View();
             var result = ToCustomer(owner);
-            await db.CreateOwner(result);
+            await db.CreateCustomer(result);
             ViewData["Success"] = $"User {owner.FirstName} {owner.LastName} added successfully.";
             return View();
         }

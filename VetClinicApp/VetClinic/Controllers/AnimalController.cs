@@ -5,9 +5,7 @@
 
 namespace VetClinic.Controllers
 {
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using MongoDbAccess.Models;
     using VetClinic.Models;
     using X.PagedList;
     using static Mapper.ModelMapper;
@@ -15,7 +13,7 @@ namespace VetClinic.Controllers
 
     public class AnimalController : Controller
     {
-        private readonly MongoDbAccess.Database.MongoDbAccess db = GetDataAccess();
+        private readonly MongoDbAccess.Interfaces.IAnimalCrud db = GetIAnimalCrud();
         // GET: AnimalController
         public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
@@ -25,7 +23,7 @@ namespace VetClinic.Controllers
             else searchString = currentFilter;
             ViewData["CurrentFilter"] = searchString;
 
-            List<Animal> data = string.IsNullOrEmpty(searchString)
+            var data = string.IsNullOrEmpty(searchString)
                 ? await db.GetAnimalsByNameBeginsWith("a")
                 : await db.GetAnimalsByNameBeginsWith(searchString);
             data = sortOrder switch
@@ -81,7 +79,7 @@ namespace VetClinic.Controllers
         public async Task<ActionResult> Edit(string id)
         {
             var viewAnimal = ToAnimalViewModel(await db.GetAnimalById(id));
-            
+
             return View(viewAnimal);
         }
 
@@ -112,7 +110,7 @@ namespace VetClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(AnimalViewModel animal)
         {
-            ViewData["OwnerId"]= animal.OwnerId;
+            ViewData["OwnerId"] = animal.OwnerId;
             if (animal.OwnerId != null)
             {
                 await db.DeleteAnimal(ToAnimal(animal));

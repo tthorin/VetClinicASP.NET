@@ -5,11 +5,10 @@
 
 namespace VetClinic.Models
 {
-    using MongoDbAccess.Interfaces;
     using System;
     using System.ComponentModel.DataAnnotations;
 
-    public class AnimalViewModel : IAnimal
+    public class AnimalViewModel
     {
         [Required(ErrorMessage ="You must enter a name for the animal.")]
         public string Name { get; set; } = "";

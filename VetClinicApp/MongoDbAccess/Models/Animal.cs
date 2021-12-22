@@ -7,10 +7,9 @@ namespace MongoDbAccess.Models
 {
     using MongoDB.Bson.Serialization.Attributes;
     using MongoDB.Bson;
-    using MongoDbAccess.Interfaces;
     using System;
 
-    public class Animal : IAnimal
+    public class Animal
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

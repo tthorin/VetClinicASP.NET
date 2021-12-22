@@ -13,7 +13,7 @@ namespace MongoDbAccess.Database
     using System.Threading.Tasks;
     using System;
 
-    public class MongoDbAccess
+    public class MongoDbAccess : ICustomerAnimalCrud, IDBStats
     {
         private readonly string connectionString;
         internal const string DatabaseName = "TT-VetClinic";
@@ -34,7 +34,7 @@ namespace MongoDbAccess.Database
             return db.GetCollection<T>(collection);
         }
 
-        public async Task<(int customers, int animals)> GetDbStats()
+        public async Task<(int customersCount, int animalsCount)> GetDbStats()
         {
             var customerCount = await CustomerCollection.EstimatedDocumentCountAsync();
             var animalCount = await AnimalCollection.EstimatedDocumentCountAsync();
@@ -42,14 +42,14 @@ namespace MongoDbAccess.Database
         }
 
         public async Task<Animal> GetAnimalById(string id)
-        {   
+        {
             var output = await AnimalCollection.FindAsync(x => x.Id == id);
             return output.FirstOrDefault();
         }
 
         public async Task<List<Animal>> GetAnimalsByNameBeginsWith(string searchString)
         {
-            
+
             var result = await AnimalCollection.FindAsync(x =>
                 x.Name.ToLower().StartsWith(searchString.ToLower()));
             return result.ToList();
@@ -61,7 +61,7 @@ namespace MongoDbAccess.Database
             return result.ToList();
         }
 
-        public Task CreateOwner(Customer owner)
+        public Task CreateCustomer(Customer owner)
         {
             return CustomerCollection.InsertOneAsync(owner);
         }
@@ -109,19 +109,12 @@ namespace MongoDbAccess.Database
         public Task UpdateCustomer(Customer owner)
         {
             var filter = Builders<Customer>.Filter.Eq("Id", owner.Id);
-            return CustomerCollection.ReplaceOneAsync(filter, owner, new ReplaceOptions {IsUpsert = true});
+            return CustomerCollection.ReplaceOneAsync(filter, owner, new ReplaceOptions { IsUpsert = true });
         }
 
         public Task DeleteCustomerById(string id)
         {
             return CustomerCollection.DeleteOneAsync(x => x.Id == id);
-        }
-
-        public List<Customer> GetCustomersWithoutAnimals()
-        {
-            var filter = Builders<Customer>.Filter.Eq("Pets.Count",0);
-            var output = CustomerCollection.AsQueryable().Where(x => x.Pets.Count == 0).ToList();
-            return output.ToList();
         }
     }
 }
