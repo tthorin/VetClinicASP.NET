@@ -29,7 +29,7 @@ namespace VetClinic.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             List<Customer> data = string.IsNullOrEmpty(searchString)
-                ? await db.GetAllCustomers()
+                ? await db.GetCustomersEitherNameBeginsWith("a")
                 : await db.GetCustomersEitherNameBeginsWith(searchString);
             data = sortOrder switch
             {
@@ -50,26 +50,6 @@ namespace VetClinic.Controllers
 
             return View(customers.ToPagedList(pageNumber,pageSize));
             
-        }
-
-        public async Task<ActionResult> ListCustomers(string beginsWith)
-        {
-            List<Customer> data = new();
-            if (beginsWith != null) data = await db.GetCustomersEitherNameBeginsWith(beginsWith);
-            else data = await db.GetAllCustomers();
-
-            var thisUrl = Request.QueryString.HasValue && Request.QueryString.Value != null
-                ? Request.QueryString.Value[^1].ToString()
-                : "A";
-            ViewData["thisUrl"] = thisUrl;
-
-            owners.Clear();
-            foreach (var item in data)
-            {
-                owners.Add(ToCustomerViewModel(item));
-            }
-
-            return View(owners);
         }
 
         // GET: PetOwnerController/Details/5
@@ -117,10 +97,8 @@ namespace VetClinic.Controllers
                 var reMapped = ToCustomer(owner);
                 await db.UpdateCustomer(reMapped);
                 ViewData["Success"] = $"User {owner.FirstName} {owner.LastName} updated successfully.";
-                return View();
+                return View(owner);
             }
-
-            if (owner.Pets?.Count > 0) TempData["Pets"] = owner.Pets;
             return View(owner);
         }
 
@@ -138,7 +116,8 @@ namespace VetClinic.Controllers
         public async Task<ActionResult> Delete(CustomerViewModel ownerToDelete)
         {
             await db.DeleteCustomerById(ownerToDelete.Id);
-            return RedirectToAction(nameof(ListCustomers));
+            ViewData["Success"] = $"User {ownerToDelete.FirstName} {ownerToDelete.LastName} deleted.";
+            return View();
         }
     }
 }

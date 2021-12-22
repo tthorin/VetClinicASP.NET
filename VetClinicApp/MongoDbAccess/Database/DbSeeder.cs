@@ -11,6 +11,7 @@ namespace MongoDbAccess.Database
     using System;
     using static Factory;
     using System.Collections.Generic;
+    using MongoDB.Bson;
 
     public class DbSeeder
     {
@@ -37,11 +38,44 @@ namespace MongoDbAccess.Database
                 await InsertAnimalsIntoDb();
                 MatchAndAddAnimalsToCustomers();
                 await UpdateCustomersInDb();
+                await CreateIndexes();
             }
         }
 
+        private async Task CreateIndexes()
+        {
+            await CreateCustomerIdexes();
+            await CreateAnimalIndexes();
+        }
+
+        private async Task CreateAnimalIndexes()
+        {
+            var db = client.GetDatabase(MongoDbAccess.DatabaseName);
+            var collection = db.GetCollection<Animal>(MongoDbAccess.PetCollection);
+
+            var animalIndexBuilder = Builders<Animal>.IndexKeys;
+
+            var nameIndex = new CreateIndexModel<Animal>(animalIndexBuilder.Ascending(x => x.Name));
+
+            await collection.Indexes.CreateOneAsync(nameIndex);
+        }
+
+        private async Task CreateCustomerIdexes()
+        {
+            var db = client.GetDatabase(MongoDbAccess.DatabaseName);
+            var ownerCollection = db.GetCollection<Customer>(MongoDbAccess.OwnerCollection);
+
+            var customerIndexBuilder = Builders<Customer>.IndexKeys;
+
+            var indexList = new List<CreateIndexModel<Customer>>();
+            indexList.Add(new CreateIndexModel<Customer>(customerIndexBuilder.Ascending(x => x.FirstName)));
+            indexList.Add(new CreateIndexModel<Customer>(customerIndexBuilder.Ascending(x => x.LastName)));
+
+            await ownerCollection.Indexes.CreateManyAsync(indexList);
+        }
+
         private async Task UpdateCustomersInDb()
-        {   
+        {
             var db = client.GetDatabase(MongoDbAccess.DatabaseName);
             var collection = db.GetCollection<Customer>(MongoDbAccess.OwnerCollection);
             var bulkReplace = new List<WriteModel<Customer>>();
@@ -65,7 +99,7 @@ namespace MongoDbAccess.Database
         private async Task InsertAnimalsIntoDb()
         {
             var db = client.GetDatabase(MongoDbAccess.DatabaseName);
-            var collection = db.GetCollection<Animal>(MongoDbAccess.AnimalCollection);
+            var collection = db.GetCollection<Animal>(MongoDbAccess.PetCollection);
             await collection.InsertManyAsync(animalList.Take(count));
             var noId = animalList.Where(x => string.IsNullOrEmpty(x.Id)).ToList();
         }

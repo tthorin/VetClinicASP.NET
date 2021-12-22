@@ -7,6 +7,7 @@ namespace MongoDbAccess.Helpers
 {
     using Database;
     using Models;
+    using System;
 
     internal static class CustomerHelper
     {
@@ -19,11 +20,19 @@ namespace MongoDbAccess.Helpers
             await db.UpdateCustomer(owner);
         }
 
-        internal static async Task RemoveAnimalFromCustomer(string animalId, string ownerId)
+        internal static async Task RemoveAnimalFromCustomer(Animal animalToBeDeleted)
         {
-            var owner = await db.GetCustomerById(ownerId);
-            var animal = owner.Pets.Find(x=>x.Id == animalId);
+            var owner = await db.GetCustomerById(animalToBeDeleted.OwnerId);
+            var animal = owner.Pets.Find(x=>x.Id == animalToBeDeleted.Id);
             if (animal!=null)owner.Pets.Remove(animal);
+            await db.UpdateCustomer(owner);
+        }
+
+        internal static async Task UpdateAnimalOnCustomer(Animal dbAnimal)
+        {
+            var owner = await db.GetCustomerById(dbAnimal.OwnerId);
+            var animalToUpdateIdx = owner.Pets.FindIndex(x=> x.Id==dbAnimal.Id);
+            owner.Pets[animalToUpdateIdx] = dbAnimal;
             await db.UpdateCustomer(owner);
         }
     }

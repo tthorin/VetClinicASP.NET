@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    string backToListValue = !string.IsNullOrEmpty(Model?.Name) && Model.Name.Length >=2?Model.Name[..2]:"";
 }
 
 <h1>Details</h1>
@@ -40,5 +41,5 @@
     <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id" >Edit</a>
     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model?.Id" >Delete</a>
     <a class="btn btn-outline-info" asp-controller="Customer" asp-action="Details" asp-route-id="@Model?.OwnerId" >View owner</a>
-    <a class="btn btn-outline-primary" asp-action="Index">Back to List</a>
+    <a class="btn btn-outline-primary" asp-action="Index" asp-route-searchString="@backToListValue">Back to List</a>
 </div>

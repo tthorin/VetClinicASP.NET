@@ -18,6 +18,9 @@ namespace MongoDbAccess.Models
         public string Name { get; set; } = "";
         public string Race { get; set; } = "";
         public string Gender { get; set; } = "";
+
+        [BsonElement]
+        [BsonDateTimeOptions(DateOnly=true, Kind = DateTimeKind.Local)]
         public DateTime Birthdate { get; set; } = new DateTime(2000, 1, 1);
         public string OwnerId { get; set; } = "";
     }

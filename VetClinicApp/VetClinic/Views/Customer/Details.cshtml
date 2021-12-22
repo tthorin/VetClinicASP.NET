@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    string backToListValue = !string.IsNullOrEmpty(Model.LastName) && Model.LastName.Length >=2?Model.LastName[..2]:"";
 }
 
 <h1>Details</h1>
@@ -56,7 +57,9 @@
 </div>
 <div>
     <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
-    <a class="btn btn-outline-primary" asp-action="Index" asp-route-searchString="@Model?.LastName[..1]">Back to list</a>
+    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model?.Id">Delete</a>
+    <a class="btn btn-outline-success" asp-controller="Animal" asp-action="Create" asp-route-ownerId=@Model?.Id>Add Animal</a>
+    <a class="btn btn-outline-primary" asp-action="Index" asp-route-searchString="@backToListValue">Back to list</a>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="animalInfoModal" tabindex="-1" aria-labelledby="animalInfoModalLabel" aria-hidden="true">
@@ -74,6 +77,7 @@
         </div>
     </div>
 </div>
+<!-- Modal end-->
 @section scripts{
     <script>
     var animalModal = document.getElementById('animalInfoModal')
@@ -85,6 +89,8 @@
       var race = button.getAttribute('data-bs-race')
       var gender = button.getAttribute('data-bs-gender')
       var birth = button.getAttribute('data-bs-birth')
+      var date = new Date(birth)
+      var birthDate = date.getFullYear() + ' - ' + (date.getMonth()+1) + ' - ' + date.getDate()
       // Update the modal's content.
       var modalTitle = animalInfoModal.querySelector('.modal-title')
       var modalBody = animalInfoModal.querySelector('.modal-body')
@@ -94,10 +100,7 @@
       modalTitle.textContent = "Animal name: " +name
       modalBody.textContent = "Race: " + race + "\r\n";
       modalBody.textContent += "Gender: " + gender + "\r\n";
-      modalBody.textContent += "Birthdate: \r\n";
-      modalBody.textContent += birth;
+      modalBody.textContent += "Birthdate: "+birthDate;
     })
     </script>
 }
-<!-- modal stuff -->
-<!-- Button trigger modal -->
