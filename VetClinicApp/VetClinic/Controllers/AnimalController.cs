@@ -104,7 +104,6 @@ namespace VetClinic.Controllers
             var dbAnimal = await db.GetAnimalById(id);
             var viewAnimal = ToAnimalViewModel(dbAnimal);
             ViewData["OwnerId"] = viewAnimal.OwnerId;
-            //TempData["ownerId"] = viewAnimal.OwnerId;
             return View(viewAnimal);
         }
 
@@ -113,7 +112,7 @@ namespace VetClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(AnimalViewModel animal)
         {
-            //var ownerId = TempData["ownerId"]?.ToString();
+            ViewData["OwnerId"]= animal.OwnerId;
             if (animal.OwnerId != null)
             {
                 await db.DeleteAnimal(ToAnimal(animal));

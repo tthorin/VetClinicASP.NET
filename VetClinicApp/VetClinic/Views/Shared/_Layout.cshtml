@@ -34,8 +34,8 @@
 					</ul>
 				</div>
 
-				<form class="d-flex" method="get" asp-controller="customer">
-					<input class="form-control me-2" id="searchText" type="search" placeholder="Search for customer" aria-label="Search" name="searchString"/>
+				<form class="d-flex" method="get" asp-controller="customer" asp-action="Index">
+					<input class="form-control me-2" id="searchText" type="search" placeholder="Search for customer" aria-label="Search" name="searchString" />
 					<button class="btn btn-outline-primary btn-sm" type="submit">Search</button>
 				</form>
 			</div>
@@ -52,9 +52,8 @@
 			&copy; 2021 - VetClinic - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
 		</div>
 	</footer>
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/js/popper/popper.min.js"></script>
-	<script src="~/js/bootstrap/bootstrap.js"></script>
+	<script src="~/lib/jquery/dist/jquery.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -89,6 +89,8 @@
       var race = button.getAttribute('data-bs-race')
       var gender = button.getAttribute('data-bs-gender')
       var birth = button.getAttribute('data-bs-birth')
+      var date = new Date(birth)
+      var birthDate = date.getFullYear() + ' - ' + (date.getMonth()+1) + ' - ' + date.getDate()
       // Update the modal's content.
       var modalTitle = animalInfoModal.querySelector('.modal-title')
       var modalBody = animalInfoModal.querySelector('.modal-body')
@@ -98,8 +100,7 @@
       modalTitle.textContent = "Animal name: " +name
       modalBody.textContent = "Race: " + race + "\r\n";
       modalBody.textContent += "Gender: " + gender + "\r\n";
-      modalBody.textContent += "Birthdate: \r\n";
-      modalBody.textContent += birth;
+      modalBody.textContent += "Birthdate: "+birthDate;
     })
     </script>
 }
