@@ -119,16 +119,14 @@ namespace MongoDbAccess.Database
         {
             var filter = Builders<Customer>.Filter.Eq("Id", owner.Id);
             var result = await CustomerCollection.ReplaceOneAsync(filter, owner, new ReplaceOptions { IsUpsert = true });
-            if (result.IsModifiedCountAvailable && result.ModifiedCount > 0) return true;
-            else return false;
+            return result.IsModifiedCountAvailable && result.ModifiedCount > 0;
         }
 
         public async Task<bool> DeleteCustomerById(string id)
         {
             await CustomerHelper.DeleteAnimalsTogetherWithCustomer(id);
             var result = await CustomerCollection.DeleteOneAsync(x => x.Id == id);
-            if (result.IsAcknowledged && result.DeletedCount > 0) return true;
-            else return false;
+            return result.IsAcknowledged && result.DeletedCount > 0;
         }
     }
 }

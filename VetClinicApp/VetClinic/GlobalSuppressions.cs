@@ -5,5 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Design", "RCS1090:Add call to 'ConfigureAwait' (or vice versa).", Justification = "<Pending>", Scope = "member", Target = "~M:VetClinic.Controllers.CustomerController.ListCustomers(System.String)~System.Threading.Tasks.Task{Microsoft.AspNetCore.Mvc.ActionResult}")]
 [assembly: SuppressMessage("Design", "RCS1090:Add call to 'ConfigureAwait' (or vice versa).", Justification = "<Pending>", Scope = "member", Target = "~M:VetClinic.Controllers.CustomerController.Details(System.String)~System.Threading.Tasks.Task{Microsoft.AspNetCore.Mvc.ActionResult}")]

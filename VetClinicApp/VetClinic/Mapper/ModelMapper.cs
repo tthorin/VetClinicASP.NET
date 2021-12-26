@@ -41,7 +41,7 @@ namespace VetClinic.Mapper
         internal static Animal ToAnimal(AnimalViewModel animalView)
         {
             var output = new Animal();
-            
+
             if (!string.IsNullOrWhiteSpace(animalView.Id)) output.Id = animalView.Id;
             if (!string.IsNullOrWhiteSpace(animalView.Name)) output.Name = animalView.Name;
             if (!string.IsNullOrWhiteSpace(animalView.Race)) output.Race = animalView.Race;
@@ -53,7 +53,7 @@ namespace VetClinic.Mapper
         internal static AnimalViewModel ToAnimalViewModel(Animal animal)
         {
             var output = new AnimalViewModel();
-            
+
             if (!string.IsNullOrWhiteSpace(animal.Id)) output.Id = animal.Id;
             if (!string.IsNullOrWhiteSpace(animal.Name)) output.Name = animal.Name;
             if (!string.IsNullOrWhiteSpace(animal.Race)) output.Race = animal.Race;
