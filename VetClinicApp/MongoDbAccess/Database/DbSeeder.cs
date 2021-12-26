@@ -9,11 +9,9 @@ namespace MongoDbAccess.Database
     using Interfaces;
     using MongoDB.Driver;
     using System;
-    using static Factory;
     using System.Collections.Generic;
-    using MongoDB.Bson;
 
-    public class DbSeeder
+    public class DbSeeder : IDbSeeder
     {
         private readonly IFileHelper fileHelper;
         private readonly IJsonHelper jsonHelper;
@@ -67,9 +65,11 @@ namespace MongoDbAccess.Database
 
             var customerIndexBuilder = Builders<Customer>.IndexKeys;
 
-            var indexList = new List<CreateIndexModel<Customer>>();
-            indexList.Add(new CreateIndexModel<Customer>(customerIndexBuilder.Ascending(x => x.FirstName)));
-            indexList.Add(new CreateIndexModel<Customer>(customerIndexBuilder.Ascending(x => x.LastName)));
+            var indexList = new List<CreateIndexModel<Customer>>
+            {
+                new CreateIndexModel<Customer>(customerIndexBuilder.Ascending(x => x.FirstName)),
+                new CreateIndexModel<Customer>(customerIndexBuilder.Ascending(x => x.LastName))
+            };
 
             await ownerCollection.Indexes.CreateManyAsync(indexList);
         }

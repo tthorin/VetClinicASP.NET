@@ -1,67 +1,69 @@
 ﻿@model VetClinic.Models.CustomerViewModel
 
 @{
-    ViewData["Title"] = "Edit";
-    var returnToListValue = string.IsNullOrEmpty(Model.LastName)||Model.LastName.Length<2 ? "" : Model.LastName[..2];
+	ViewData["Title"] = "Edit";
+	var returnToListValue = string.IsNullOrEmpty(Model.LastName) || Model.LastName.Length < 2 ? "" : Model.LastName[..2];
 }
 @if (!string.IsNullOrEmpty(ViewData["Success"] as string))
 {
-    <div class="alert alert-dismissible alert-success">
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        <strong>Customer updated.</strong>
-    </div>
+	<div class="alert alert-dismissible alert-success">
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		<strong>Customer updated.</strong>
+	</div>
+	<a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@Model.Id">To Customer</a>
 }
-
-<h1>Edit</h1>
-
-<h4>Customer</h4>
-<hr/>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control"/>
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control"/>
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control"/>
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control"/>
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmEmail" class="control-label"></label>
-                <input asp-for="ConfirmEmail" class="form-control"/>
-                <span asp-validation-for="ConfirmEmail" class="text-danger"></span>
-            </div>
-            <div>
-                @for(int i=0;i<Model.Pets.Count;i++)
-                {
-                    <input type="hidden" asp-for="@Model.Pets[i].Birthdate"/>
-                    <input type="hidden" asp-for="@Model.Pets[i].Name"/>
-                    <input type="hidden" asp-for="@Model.Pets[i].Race"/>
-                    <input type="hidden" asp-for="@Model.Pets[i].Gender"/>
-                    <input type="hidden" asp-for="@Model.Pets[i].Id"/>
-                    <input type="hidden" asp-for="@Model.Pets[i].OwnerId"/>
-                }
-            </div>
-            <br/>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-outline-warning"/>
-                
-                <a class="btn btn-outline-primary" asp-action="Index" asp-route-searchString="@returnToListValue">Back to List</a>
-            </div>
-        </form>
-    </div>
-</div>
+else
+{
+	<h1>Edit</h1>
+	<h4>Customer</h4>
+	<hr />
+	<div class="row">
+		<div class="col-md-4">
+			<form asp-action="Edit">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label asp-for="FirstName" class="control-label"></label>
+					<input asp-for="FirstName" class="form-control" />
+					<span asp-validation-for="FirstName" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="LastName" class="control-label"></label>
+					<input asp-for="LastName" class="form-control" />
+					<span asp-validation-for="LastName" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="PhoneNumber" class="control-label"></label>
+					<input asp-for="PhoneNumber" class="form-control" />
+					<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Email" class="control-label"></label>
+					<input asp-for="Email" class="form-control" />
+					<span asp-validation-for="Email" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="ConfirmEmail" class="control-label"></label>
+					<input asp-for="ConfirmEmail" class="form-control" />
+					<span asp-validation-for="ConfirmEmail" class="text-danger"></span>
+				</div>
+				<div>
+					@for (int i = 0; i < Model.Pets.Count; i++)
+					{
+						<input type="hidden" asp-for="@Model.Pets[i].Birthdate" />
+						<input type="hidden" asp-for="@Model.Pets[i].Name" />
+						<input type="hidden" asp-for="@Model.Pets[i].Race" />
+						<input type="hidden" asp-for="@Model.Pets[i].Gender" />
+						<input type="hidden" asp-for="@Model.Pets[i].Id" />
+						<input type="hidden" asp-for="@Model.Pets[i].OwnerId" />
+					}
+				</div>
+				<br />
+				<div class="form-group">
+					<input type="submit" value="Save" class="btn btn-outline-warning" />
+					<a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@Model.Id">Back</a>
+					<a class="btn btn-outline-primary" asp-action="Index" asp-route-searchString="@returnToListValue">Customer List</a>
+				</div>
+			</form>
+		</div>
+	</div>
+}

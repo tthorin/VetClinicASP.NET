@@ -2,11 +2,10 @@
 
 @{
     ViewData["Title"] = "Animals";
+    var currentFilter = ViewData["CurrentFilter"] != null?ViewData["CurrentFilter"] as string:"";
 }
 <h1>Animal List</h1>
 
-
-@{ string currentFilter = ViewData["CurrentFilter"] as string; }
 <div class="container-fluid">
     <div class="row">
         <div class="col">
@@ -43,14 +42,9 @@
     </thead>
     <tbody>
     @if (Model != null)
-    {
-        int number = 0;
-        string btnGrp = "btnGroupDrop";
-        string combined = "";
+    {   
         foreach (var item in Model)
         {
-            number++;
-            combined = btnGrp + number.ToString();
             <tr class="table-secondary">
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
@@ -73,11 +67,11 @@
     </tbody>
 </table>
 <br/>
-Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+Page @(Model?.PageCount < Model?.PageNumber ? 0 : Model?.PageNumber) of @Model?.PageCount
 <nav aria-label="Page navigation">
     <ul class="pagination justify-content-end pagination-sm">
         @{
-            if (Model.PageCount > 1)
+            if (Model?.PageCount > 1)
             {
                 if (Model.PageNumber == 1)
                 {
@@ -120,6 +114,9 @@ Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.Page
                     <li class="page-item disabled">
                         <a class="page-link">&raquo;</a>
                     </li>
+                    <li class="page-item disabled">
+                        <a class="page-link">Last</a>
+                    </li>
                 }
                 else
                 {
@@ -128,7 +125,6 @@ Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.Page
                         <a class="page-link" asp-action="index" asp-route-page="@next" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">&raquo;</a>
                     </li>
                     <li class="page-item">
-
                         <a class="page-link" asp-action="index" asp-route-page="@Model.PageCount" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Last</a>
                     </li>
                 }

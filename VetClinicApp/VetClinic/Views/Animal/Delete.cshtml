@@ -9,6 +9,7 @@
 		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 		<strong>Animal deleted.</strong>
 	</div>
+	<a class="btn btn-outline-primary" asp-controller="Customer" asp-action="Details" asp-route-id="@ViewData["OwnerId"]">Back to Owner</a>
 	<a class="btn btn-outline-primary" asp-action="Index">Back to Animal List</a>
 }
 else

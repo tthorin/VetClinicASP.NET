@@ -6,18 +6,20 @@
 namespace MongoDbAccess
 {
     using MongoDbAccess.Database;
-    using MongoDbAccess.Models;
     using MongoDbAccess.Helpers;
     using MongoDbAccess.Interfaces;
 
     public static class Factory
     {
-        public static Customer GetCustomer()
+        public static IAnimalCrud GetIAnimalCrud()
         {
-            return new Customer();
+            return new MongoDbAccess(GetConnectionStringHelper());
         }
-
-        public static MongoDbAccess GetDataAccess()
+        public static ICustomerCrud GetICustomerCrud()
+        {
+            return new MongoDbAccess(GetConnectionStringHelper());
+        }
+        public static IDBStats GetIDbstats()
         {
             return new MongoDbAccess(GetConnectionStringHelper());
         }
@@ -29,15 +31,17 @@ namespace MongoDbAccess
         {
             return new JsonHelper();
         }
-        //todo: change back to internal?
-        public static DbSeeder GetDbSeeder()
+        public static IDbSeeder GetIDbSeeder()
         {
             return new DbSeeder(GetConnectionStringHelper(), GetFileHelper(), GetJsonHelper());
         }
         internal static IConnectionStringHelper GetConnectionStringHelper()
         {
-            
             return ConnectionStringHelper.Instance;
+        }
+        internal static CustomerDbHelper GetCustomerDbHelper()
+        {
+            return new CustomerDbHelper(GetICustomerCrud());
         }
     }
 }

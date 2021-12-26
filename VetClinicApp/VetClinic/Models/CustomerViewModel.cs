@@ -14,10 +14,12 @@ namespace VetClinic.Models
         public string Id { get; set; } = "";
         [Display(Name = "First Name")]
         [Required(ErrorMessage = "You need to enter a first name")]
+        [StringLength(50, ErrorMessage = "First name must be between 2 and 50 characters long.", MinimumLength = 2)]
         public string FirstName { get; set; } = "";
 
         [Display(Name = "Last Name")]
         [Required(ErrorMessage = "You need to enter a last name")]
+        [StringLength(50, ErrorMessage = "Last name must be between 2 and 50 characters long.", MinimumLength = 2)]
         public string LastName { get; set; } = "";
 
         [Display(Name = "Phone number")]
@@ -30,7 +32,7 @@ namespace VetClinic.Models
         public string Email { get; set; } = "";
 
         [Display(Name = "Confirm Email adress")]
-        [Compare("Email", ErrorMessage = "The Email Adress and Confirm Email must match")]
+        [Compare("Email", ErrorMessage = "The Email Adress and Email confirmation fields must match")]
         public string ConfirmEmail { get; set; } = "";
         public List<Animal> Pets { get; set; } = new();
     }

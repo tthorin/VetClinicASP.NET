@@ -15,10 +15,9 @@ namespace VetClinic.Controllers
 
     public class CustomerController : Controller
     {
-        readonly private MongoDbAccess.Database.MongoDbAccess db = MongoDbAccess.Factory.GetDataAccess();
-        readonly private List<CustomerViewModel> owners = new();
+        readonly private MongoDbAccess.Interfaces.ICustomerCrud db = MongoDbAccess.Factory.GetICustomerCrud();
 
-        // GET: PetOwnerController
+        // GET: CustomerController
         public async Task<ActionResult> Index(string sortOrder,string currentFilter, string searchString,int? page)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -45,14 +44,13 @@ namespace VetClinic.Controllers
                 customers.Add(ToCustomerViewModel(item));
             }
 
-            int pageSize = 8;
+            const int pageSize = 8;
             int pageNumber = (page ?? 1);
 
             return View(customers.ToPagedList(pageNumber,pageSize));
-            
         }
 
-        // GET: PetOwnerController/Details/5
+        // GET: CustomerController/Details/5
         public async Task<ActionResult> Details(string id)
         {
             var data = await db.GetCustomerById(id);
@@ -61,25 +59,27 @@ namespace VetClinic.Controllers
             return View(viewPerson);
         }
 
-        // GET: PetOwnerController/Create
+        // GET: CustomerController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: PetOwnerController/Create
+        // POST: CustomerController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CustomerViewModel owner)
         {
             if (!ModelState.IsValid) return View();
             var result = ToCustomer(owner);
-            await db.CreateOwner(result);
-            ViewData["Success"] = $"User {owner.FirstName} {owner.LastName} added successfully.";
+            await db.CreateCustomer(result);
+
+            if (result.Id != null) ViewData["Success"] = result.Id;
+
             return View();
         }
 
-        // GET: PetOwnerController/Edit/5
+        // GET: CustomerController/Edit/5
         public async Task<ActionResult> Edit(string id)
         {
             var data = await db.GetCustomerById(id);
@@ -87,7 +87,7 @@ namespace VetClinic.Controllers
             return View(editPerson);
         }
 
-        // POST: PetOwnerController/Edit/5
+        // POST: CustomerController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(CustomerViewModel owner)
@@ -95,14 +95,14 @@ namespace VetClinic.Controllers
             if (ModelState.IsValid)
             {
                 var reMapped = ToCustomer(owner);
-                await db.UpdateCustomer(reMapped);
-                ViewData["Success"] = $"User {owner.FirstName} {owner.LastName} updated successfully.";
+                var result = await db.UpdateCustomer(reMapped);
+                if (result) ViewData["Success"] = $"User {owner.FirstName} {owner.LastName} updated successfully.";
                 return View(owner);
             }
             return View(owner);
         }
 
-        // GET: PetOwnerController/Delete/5
+        // GET: CustomerController/Delete/5
         public async Task<ActionResult> Delete(string id)
         {
             var data = await db.GetCustomerById(id);
@@ -110,13 +110,13 @@ namespace VetClinic.Controllers
             return View(owner);
         }
 
-        // POST: PetOwnerController/Delete/5
+        // POST: CustomerController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(CustomerViewModel ownerToDelete)
         {
-            await db.DeleteCustomerById(ownerToDelete.Id);
-            ViewData["Success"] = $"User {ownerToDelete.FirstName} {ownerToDelete.LastName} deleted.";
+            var deletionSuccessful = await db.DeleteCustomerById(ownerToDelete.Id);
+            if (deletionSuccessful) ViewData["Success"] = $"User {ownerToDelete.FirstName} {ownerToDelete.LastName} deleted.";
             return View();
         }
     }

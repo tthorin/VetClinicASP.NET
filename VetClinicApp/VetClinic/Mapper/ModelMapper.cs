@@ -7,14 +7,13 @@ namespace VetClinic.Mapper
 {
     using MongoDbAccess.Models;
     using Models;
-    using static MongoDbAccess.Factory;
 
     internal static class ModelMapper
     {
         internal static Customer ToCustomer(CustomerViewModel vPerson)
         {
-            var output = GetCustomer();
-            
+            var output = new Customer();
+
             if (!string.IsNullOrWhiteSpace(vPerson.Id)) output.Id = vPerson.Id;
             if (!string.IsNullOrWhiteSpace(vPerson.FirstName)) output.FirstName = vPerson.FirstName;
             if (!string.IsNullOrWhiteSpace(vPerson.LastName)) output.LastName = vPerson.LastName;
@@ -26,7 +25,7 @@ namespace VetClinic.Mapper
         internal static CustomerViewModel ToCustomerViewModel(Customer owner)
         {
             var output = new CustomerViewModel();
-            
+
             if (!string.IsNullOrWhiteSpace(owner.Id)) output.Id = owner.Id;
             if (!string.IsNullOrWhiteSpace(owner.FirstName)) output.FirstName = owner.FirstName;
             if (!string.IsNullOrWhiteSpace(owner.LastName)) output.LastName = owner.LastName;
@@ -42,7 +41,7 @@ namespace VetClinic.Mapper
         internal static Animal ToAnimal(AnimalViewModel animalView)
         {
             var output = new Animal();
-            
+
             if (!string.IsNullOrWhiteSpace(animalView.Id)) output.Id = animalView.Id;
             if (!string.IsNullOrWhiteSpace(animalView.Name)) output.Name = animalView.Name;
             if (!string.IsNullOrWhiteSpace(animalView.Race)) output.Race = animalView.Race;
@@ -54,7 +53,7 @@ namespace VetClinic.Mapper
         internal static AnimalViewModel ToAnimalViewModel(Animal animal)
         {
             var output = new AnimalViewModel();
-            
+
             if (!string.IsNullOrWhiteSpace(animal.Id)) output.Id = animal.Id;
             if (!string.IsNullOrWhiteSpace(animal.Name)) output.Name = animal.Name;
             if (!string.IsNullOrWhiteSpace(animal.Race)) output.Race = animal.Race;

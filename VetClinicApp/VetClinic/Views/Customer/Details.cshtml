@@ -1,106 +1,114 @@
 ﻿@model VetClinic.Models.CustomerViewModel
 
 @{
-    ViewData["Title"] = "Details";
-    string backToListValue = !string.IsNullOrEmpty(Model.LastName) && Model.LastName.Length >=2?Model.LastName[..2]:"";
+	ViewData["Title"] = "Details";
+	string backToListValue = !string.IsNullOrEmpty(Model.LastName) && Model.LastName.Length >= 2 ? Model.LastName[..2] : "";
 }
 
 <h1>Details</h1>
 
 <div>
-    <h4>For Customer</h4>
-    <hr/>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-    </dl>
-    @if (Model?.Pets.Count > 0)
-    {
-        <h5>Animals:</h5>
-        <dl class="row">
-            @foreach (var pet in Model.Pets)
-            {
-                <dt class="col-sm-2">
-                    @pet.Race
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.ActionLink(@pet.Name, "Details", "Animal", new {Id = pet.Id})
-                    <a class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#animalInfoModal" data-bs-name="@pet.Name" data-bs-race="@pet.Race" data-bs-gender="@pet.Gender" data-bs-birth="@pet.Birthdate">
-                        Details
-                    </a>
-                </dd>
-            }
-        </dl>
-    }
+	<h4>For Customer</h4>
+	<hr />
+	<dl class="row">
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.FirstName)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.FirstName)
+		</dd>
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.LastName)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.LastName)
+		</dd>
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.PhoneNumber)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.PhoneNumber)
+		</dd>
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.Email)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.Email)
+		</dd>
+	</dl>
+	@if (Model?.Pets.Count > 0)
+	{
+		<br/>	
+		<h5>Animals:</h5>
+		<dl class="row">
+			<dt class="col-sm-2">
+				<p class="h6">Race:</p>
+			</dt>
+			<dd class="col-sm-10">
+				<p class="h6">Name:</p>
+			</dd>
+			@foreach (var pet in Model.Pets)
+			{
+				<dt class="col-sm-2">
+					@pet.Race
+				</dt>
+				<dd class="col-sm-10">
+					@Html.ActionLink(@pet.Name, "Details", "Animal", new {Id = pet.Id})
+					<a class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#animalInfoModal" data-bs-name="@pet.Name" data-bs-race="@pet.Race" data-bs-gender="@pet.Gender" data-bs-birth="@pet.Birthdate">
+						Quick view
+					</a>
+				</dd>
+			}
+		</dl>
+		<br/>
+	}
 </div>
 <div>
-    <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
-    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model?.Id">Delete</a>
-    <a class="btn btn-outline-success" asp-controller="Animal" asp-action="Create" asp-route-ownerId=@Model?.Id>Add Animal</a>
-    <a class="btn btn-outline-primary" asp-action="Index" asp-route-searchString="@backToListValue">Back to list</a>
+	<a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+	<a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model?.Id">Delete</a>
+	<a class="btn btn-outline-success" asp-controller="Animal" asp-action="Create" asp-route-ownerId=@Model?.Id>Add Animal</a>
+	<a class="btn btn-outline-primary" asp-action="Index" asp-route-searchString="@backToListValue">Customer List</a>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="animalInfoModal" tabindex="-1" aria-labelledby="animalInfoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="animalInfoModalLabel">testModal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-outline-primary" data-bs-dismiss="modal">Close</a>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="animalInfoModalLabel">testModal</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-outline-primary" data-bs-dismiss="modal">Close</a>
+			</div>
+		</div>
+	</div>
 </div>
 <!-- Modal end-->
 @section scripts{
-    <script>
-    var animalModal = document.getElementById('animalInfoModal')
-    animalModal.addEventListener('show.bs.modal', function (event) {
-      // Button that triggered the modal
-      var button = event.relatedTarget
-      // Extract info from data-bs-* attributes
-      var name = button.getAttribute('data-bs-name')
-      var race = button.getAttribute('data-bs-race')
-      var gender = button.getAttribute('data-bs-gender')
-      var birth = button.getAttribute('data-bs-birth')
-      var date = new Date(birth)
-      var birthDate = date.getFullYear() + ' - ' + (date.getMonth()+1) + ' - ' + date.getDate()
-      // Update the modal's content.
-      var modalTitle = animalInfoModal.querySelector('.modal-title')
-      var modalBody = animalInfoModal.querySelector('.modal-body')
-      
-      modalBody.setAttribute('style', 'white-space: pre;');
-    
-      modalTitle.textContent = "Animal name: " +name
-      modalBody.textContent = "Race: " + race + "\r\n";
-      modalBody.textContent += "Gender: " + gender + "\r\n";
-      modalBody.textContent += "Birthdate: "+birthDate;
-    })
-    </script>
+<script>
+	var animalModal = document.getElementById('animalInfoModal')
+	animalModal.addEventListener('show.bs.modal', function (event) {
+	  // Button that triggered the modal
+	  var button = event.relatedTarget
+	  // Extract info from data-bs-* attributes
+	  var name = button.getAttribute('data-bs-name')
+	  var race = button.getAttribute('data-bs-race')
+	  var gender = button.getAttribute('data-bs-gender')
+	  var birth = button.getAttribute('data-bs-birth')
+	  var date = new Date(birth)
+	  var birthDate = date.getFullYear() + ' - ' + (date.getMonth()+1) + ' - ' + date.getDate()
+	  // Update the modal's content.
+	  var modalTitle = animalInfoModal.querySelector('.modal-title')
+	  var modalBody = animalInfoModal.querySelector('.modal-body')
+
+	  modalBody.setAttribute('style', 'white-space: pre;');
+
+	  modalTitle.textContent = "Animal name: " +name
+	  modalBody.textContent = "Race: " + race + "\r\n";
+	  modalBody.textContent += "Gender: " + gender + "\r\n";
+	  modalBody.textContent += "Birthdate: "+birthDate;
+	})
+</script>
 }
