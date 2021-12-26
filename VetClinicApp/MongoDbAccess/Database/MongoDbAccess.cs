@@ -5,7 +5,7 @@
 
 namespace MongoDbAccess.Database
 {
-    using Helpers;
+    using static Helpers.StringHelper;
     using Interfaces;
     using Models;
     using MongoDB.Driver;
@@ -61,6 +61,8 @@ namespace MongoDbAccess.Database
 
         public Task CreateCustomer(Customer owner)
         {
+            owner.FirstName = Prettify(owner.FirstName);
+            owner.LastName = Prettify(owner.LastName);
             return CustomerCollection.InsertOneAsync(owner);
         }
 
@@ -80,6 +82,7 @@ namespace MongoDbAccess.Database
 
         public async Task CreateAnimal(Animal animal)
         {
+            animal.Name = Prettify(animal.Name);
             await AnimalCollection.InsertOneAsync(animal);
             var ch = Factory.GetCustomerDbHelper();
             await ch.AddAnimalToCustomer(animal);
@@ -94,6 +97,7 @@ namespace MongoDbAccess.Database
 
         public async Task<bool> UpdateAnimal(Animal animal)
         {
+            animal.Name = Prettify(animal.Name);
             var filter = Builders<Animal>.Filter.Eq("Id", animal.Id);
             var result = await AnimalCollection.ReplaceOneAsync(filter, animal, new ReplaceOptions { IsUpsert = true });
             if (result.IsModifiedCountAvailable && result.ModifiedCount > 0)
@@ -119,6 +123,8 @@ namespace MongoDbAccess.Database
 
         public async Task<bool> UpdateCustomer(Customer owner)
         {
+            owner.FirstName = Prettify(owner.FirstName);
+            owner.LastName = Prettify(owner.LastName);
             var filter = Builders<Customer>.Filter.Eq("Id", owner.Id);
             var result = await CustomerCollection.ReplaceOneAsync(filter, owner, new ReplaceOptions { IsUpsert = true });
             return result.IsModifiedCountAvailable && result.ModifiedCount > 0;
