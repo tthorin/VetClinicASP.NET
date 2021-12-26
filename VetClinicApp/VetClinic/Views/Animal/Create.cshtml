@@ -3,46 +3,59 @@
 @{
 	ViewData["Title"] = "Add Animal";
 }
-
-<h1>Add</h1>
-
-<h4>Animal</h4>
-<hr />
-<div class="row">
-	<div class="col-md-4">
-		<form asp-action="Create">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
-				<label asp-for="Name" class="control-label"></label>
-				<input asp-for="Name" class="form-control" />
-				<span asp-validation-for="Name" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Race" class="control-label"></label>
-				<input asp-for="Race" class="form-control" />
-				<span asp-validation-for="Race" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Gender" class="control-label"></label>
-				<select asp-for="Gender" class="form-control">
-					<option value="Male">Male</option>
-					<option value="Male, neutered">Male, neutered</option>
-					<option value="Female">Female</option>
-					<option value="Female, neutered">Female, neutered</option>
-				</select>
-				<span asp-validation-for="Gender" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Birthdate" class="control-label"></label>
-				<input asp-for="Birthdate" class="form-control" value=@DateTime.Now />
-				<span asp-validation-for="Birthdate" class="text-danger"></span>
-			</div>
-			<br />
-			<div class="form-group">
-				<input type="submit" value="Create" class="btn btn-outline-success" />
-				<a class="btn btn-outline-primary" asp-action="Index">Back to List</a>
-			</div>
-		</form>
+@if (!string.IsNullOrEmpty(ViewData["Success"] as string))
+{
+	<div class="alert alert-dismissible alert-success">
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		<strong>Animal added.</strong>
 	</div>
-</div>
+	<a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@ViewData["Success"]">To Animal</a>
+	<a class="btn btn-outline-primary" asp-action="Index">Back to Owner</a>
+}
+else
+{
+	<h1>Add</h1>
 
+	<h4>Animal</h4>
+	<hr />
+	<div class="row">
+		<div class="col-md-4">
+			<form asp-action="Create">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label asp-for="Name" class="control-label"></label>
+					<input asp-for="Name" class="form-control" />
+					<span asp-validation-for="Name" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Race" class="control-label"></label>
+					<input asp-for="Race" class="form-control" />
+					<span asp-validation-for="Race" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Gender" class="control-label"></label>
+					<select asp-for="Gender" class="form-control">
+						<option value="Male">Male</option>
+						<option value="Male, neutered">Male, neutered</option>
+						<option value="Female">Female</option>
+						<option value="Female, neutered">Female, neutered</option>
+					</select>
+					<span asp-validation-for="Gender" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Birthdate" class="control-label"></label>
+					<input asp-for="Birthdate" class="form-control" value=@DateTime.Now />
+					<span asp-validation-for="Birthdate" class="text-danger"></span>
+				</div>
+				<div>
+					<input asp-for="OwnerId" class="form-control visually-hidden" />
+				</div>
+				<br />
+				<div class="form-group">
+					<input type="submit" value="Create" class="btn btn-outline-success" />
+					<a class="btn btn-outline-primary" asp-controller="Customer" asp-action="Details" asp-route-id="@Model?.OwnerId">Back to Customer</a>
+				</div>
+			</form>
+		</div>
+	</div>
+}

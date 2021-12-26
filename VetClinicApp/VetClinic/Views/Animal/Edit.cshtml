@@ -1,0 +1,62 @@
+﻿@model VetClinic.Models.AnimalViewModel
+
+@{
+	ViewData["Title"] = "Edit";
+	string backToListValue = !string.IsNullOrEmpty(Model.Name) && Model.Name.Length >= 2 ? Model.Name[..2] : "a";
+}
+@if (!string.IsNullOrEmpty(ViewData["Success"] as string))
+{
+	<div class="alert alert-dismissible alert-success">
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		<strong>Animal updated.</strong>
+	</div>
+	<a class="btn btn-outline-primary" asp-controller="Animal" asp-action="Details" asp-route-id="@Model.Id">Go to Animal</a>
+	<a class="btn btn-outline-primary" asp-controller="Customer" asp-action="Details" asp-route-id="@Model.OwnerId">Go to Owner</a>
+}
+else
+{
+	<h1>Edit</h1>
+
+	<h4>Animal</h4>
+	<hr />
+	<div class="row">
+		<div class="col-md-4">
+			<form asp-action="Edit">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label asp-for="Name" class="control-label"></label>
+					<input asp-for="Name" class="form-control" />
+					<span asp-validation-for="Name" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Birthdate" class="control-label"></label>
+					<input asp-for="Birthdate" class="form-control" />
+					<span asp-validation-for="Birthdate" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Race" class="control-label"></label>
+					<input asp-for="Race" class="form-control" />
+					<span asp-validation-for="Race" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Gender" class="control-label"></label>
+					<input asp-for="Gender" class="form-control" />
+					<span asp-validation-for="Gender" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<input asp-for="Id" class="form-control visually-hidden" />
+					<span asp-validation-for="Id" class="text-danger"></span>
+				</div>
+				<div>
+					<input asp-for="OwnerId" class="form-control visually-hidden" />
+					<span asp-validation-for="OwnerId" class="text-danger"></span>
+				</div>
+				<br />
+				<div class="form-group">
+					<input type="submit" value="Save" class="btn btn-outline-warning" />
+					<a class="btn btn-outline-primary" asp-controller="Customer" asp-action="Details" asp-route-id="@Model.OwnerId">Back to Owner</a>
+				</div>
+			</form>
+		</div>
+	</div>
+}

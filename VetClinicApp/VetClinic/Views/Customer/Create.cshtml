@@ -3,46 +3,57 @@
 @{
 	ViewData["Title"] = "Create";
 }
-
-<h1>Add</h1>
-
-<h4>Customer</h4>
-<hr />
-<div class="row">
-	<div class="col-md-4">
-		<form asp-action="Create">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
-				<label asp-for="FirstName" class="control-label"></label>
-				<input asp-for="FirstName" class="form-control" />
-				<span asp-validation-for="FirstName" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="LastName" class="control-label"></label>
-				<input asp-for="LastName" class="form-control" />
-				<span asp-validation-for="LastName" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="PhoneNumber" class="control-label"></label>
-				<input type="tel" asp-for="PhoneNumber" class="form-control" />
-				<span asp-validation-for="PhoneNumber" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Email" class="control-label"></label>
-				<input asp-for="Email" class="form-control" />
-				<span asp-validation-for="Email" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="ConfirmEmail" class="control-label"></label>
-				<input asp-for="ConfirmEmail" class="form-control" />
-				<span asp-validation-for="ConfirmEmail" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<br />
-				<input type="submit" value="Create" class="btn btn-outline-info" />
-				<a class="btn btn-outline-primary" asp-action="ListCustomers">Back to List</a>
-			</div>
-		</form>
+@if (!string.IsNullOrEmpty(ViewData["Success"] as string))
+{
+	<div class="alert alert-dismissible alert-success">
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		<strong>Customer created.</strong>
 	</div>
-</div>
+	<a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@ViewData["Success"]">To Customer</a>
+	<a class="btn btn-outline-primary" asp-action="Index">Back to Customer List</a>
+}
+else
+{
+	<h1>Add</h1>
+
+	<h4>Customer</h4>
+	<hr />
+	<div class="row">
+		<div class="col-md-4">
+			<form asp-action="Create">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label asp-for="FirstName" class="control-label"></label>
+					<input asp-for="FirstName" class="form-control" />
+					<span asp-validation-for="FirstName" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="LastName" class="control-label"></label>
+					<input asp-for="LastName" class="form-control" />
+					<span asp-validation-for="LastName" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="PhoneNumber" class="control-label"></label>
+					<input type="tel" asp-for="PhoneNumber" class="form-control" />
+					<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Email" class="control-label"></label>
+					<input asp-for="Email" class="form-control" />
+					<span asp-validation-for="Email" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="ConfirmEmail" class="control-label"></label>
+					<input asp-for="ConfirmEmail" class="form-control" />
+					<span asp-validation-for="ConfirmEmail" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<br />
+					<input type="submit" value="Create" class="btn btn-outline-info" />
+					<a class="btn btn-outline-primary" asp-action="Index">Back to List</a>
+				</div>
+			</form>
+		</div>
+	</div>
+}
 
