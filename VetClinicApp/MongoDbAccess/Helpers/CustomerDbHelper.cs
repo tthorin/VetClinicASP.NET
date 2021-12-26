@@ -9,11 +9,16 @@ namespace MongoDbAccess.Helpers
     using MongoDB.Driver;
     using MongoDbAccess.Interfaces;
 
-    internal static class CustomerHelper
+    internal class CustomerDbHelper
     {
-        private static readonly ICustomerCrud db = Factory.GetICustomerCrud();
+        private readonly ICustomerCrud db;
 
-        internal static async Task AddAnimalToCustomer(Animal animal)
+        public CustomerDbHelper(ICustomerCrud customerCrud)
+        {
+            db = customerCrud;
+        }
+
+        internal async Task AddAnimalToCustomer(Animal animal)
         {
             var owner = await db.GetCustomerById(animal.OwnerId);
             if (owner.Pets == null) owner.Pets = new List<Animal>();
@@ -21,7 +26,7 @@ namespace MongoDbAccess.Helpers
             await db.UpdateCustomer(owner);
         }
 
-        internal static async Task RemoveAnimalFromCustomer(Animal animalToBeDeleted)
+        internal async Task RemoveAnimalFromCustomer(Animal animalToBeDeleted)
         {
             var owner = await db.GetCustomerById(animalToBeDeleted.OwnerId);
             var animal = owner.Pets.Find(x => x.Id == animalToBeDeleted.Id);
@@ -29,7 +34,7 @@ namespace MongoDbAccess.Helpers
             await db.UpdateCustomer(owner);
         }
 
-        internal static async Task UpdateAnimalOnCustomer(Animal dbAnimal)
+        internal async Task UpdateAnimalOnCustomer(Animal dbAnimal)
         {
             var owner = await db.GetCustomerById(dbAnimal.OwnerId);
             var animalToUpdateIdx = owner.Pets.FindIndex(x => x.Id == dbAnimal.Id);
@@ -37,7 +42,7 @@ namespace MongoDbAccess.Helpers
             await db.UpdateCustomer(owner);
         }
 
-        internal static async Task DeleteAnimalsTogetherWithCustomer(string customerId)
+        internal async Task DeleteAnimalsTogetherWithCustomer(string customerId)
         {
             var owner = await db.GetCustomerById(customerId);
             if (owner.Pets.Count > 0)

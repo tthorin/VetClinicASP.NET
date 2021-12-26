@@ -5,13 +5,12 @@
 
 namespace MongoDbAccess.Database
 {
-    using Interfaces;
     using Helpers;
+    using Interfaces;
     using Models;
     using MongoDB.Driver;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using System;
 
     public class MongoDbAccess : ICustomerAnimalCrud, IDBStats
     {
@@ -82,7 +81,8 @@ namespace MongoDbAccess.Database
         public async Task CreateAnimal(Animal animal)
         {
             await AnimalCollection.InsertOneAsync(animal);
-            await CustomerHelper.AddAnimalToCustomer(animal);
+            var ch = Factory.GetCustomerDbHelper();
+            await ch.AddAnimalToCustomer(animal);
         }
 
         public async Task<Customer> GetCustomerById(string id)
@@ -98,7 +98,8 @@ namespace MongoDbAccess.Database
             var result = await AnimalCollection.ReplaceOneAsync(filter, animal, new ReplaceOptions { IsUpsert = true });
             if (result.IsModifiedCountAvailable && result.ModifiedCount > 0)
             {
-                await CustomerHelper.UpdateAnimalOnCustomer(animal);
+                var cdbh = Factory.GetCustomerDbHelper();
+                await cdbh.UpdateAnimalOnCustomer(animal);
                 return true;
             }
             return false;
@@ -109,7 +110,8 @@ namespace MongoDbAccess.Database
             var result = await AnimalCollection.DeleteOneAsync(x => x.Id == animal.Id);
             if (result.IsAcknowledged && result.DeletedCount > 0)
             {
-                await CustomerHelper.RemoveAnimalFromCustomer(animal);
+                var cdbh = Factory.GetCustomerDbHelper();
+                await cdbh.RemoveAnimalFromCustomer(animal);
                 return true;
             }
             return false;
@@ -124,7 +126,8 @@ namespace MongoDbAccess.Database
 
         public async Task<bool> DeleteCustomerById(string id)
         {
-            await CustomerHelper.DeleteAnimalsTogetherWithCustomer(id);
+            var cdbh = Factory.GetCustomerDbHelper();
+            await cdbh.DeleteAnimalsTogetherWithCustomer(id);
             var result = await CustomerCollection.DeleteOneAsync(x => x.Id == id);
             return result.IsAcknowledged && result.DeletedCount > 0;
         }

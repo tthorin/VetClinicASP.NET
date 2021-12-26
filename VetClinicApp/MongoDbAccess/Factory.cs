@@ -6,17 +6,11 @@
 namespace MongoDbAccess
 {
     using MongoDbAccess.Database;
-    using MongoDbAccess.Models;
     using MongoDbAccess.Helpers;
     using MongoDbAccess.Interfaces;
 
     public static class Factory
     {
-        public static Customer GetCustomer()
-        {
-            return new Customer();
-        }
-
         public static IAnimalCrud GetIAnimalCrud()
         {
             return new MongoDbAccess(GetConnectionStringHelper());
@@ -44,6 +38,10 @@ namespace MongoDbAccess
         internal static IConnectionStringHelper GetConnectionStringHelper()
         {
             return ConnectionStringHelper.Instance;
+        }
+        internal static CustomerDbHelper GetCustomerDbHelper()
+        {
+            return new CustomerDbHelper(GetICustomerCrud());
         }
     }
 }

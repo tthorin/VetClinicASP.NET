@@ -21,8 +21,8 @@ namespace MongoDbAccess.Helpers
                 lock (padlock)
                 {
                     if (_instance == null) _instance = new ConnectionStringHelper();
+                    return _instance;
                 }
-                return _instance;
             }
         }
         private ConnectionStringHelper()
@@ -33,11 +33,10 @@ namespace MongoDbAccess.Helpers
         private void ReadConnectionString()
         {
             var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            var file = @"ConnectionStrings\MongoDb.txt";
+            const string file = @"ConnectionStrings\MongoDb.txt";
             var combined = Path.Combine(documents, file);
             if (File.Exists(combined)) ConnectionString = File.ReadAllText(combined);
             else ConnectionString = @"mongodb://localhost:27017";
         }
-
     }
 }
