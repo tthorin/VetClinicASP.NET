@@ -58,7 +58,8 @@ else
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					Really delete @Model.FirstName @Model.LastName ?
+					<p>Really delete @Model.FirstName @Model.LastName ?</p>
+					<p><u> Any and all animals registered to the customer will also be deleted (@Model.Pets.Count animal(s) will be affected).</u></p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

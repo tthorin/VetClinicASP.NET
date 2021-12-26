@@ -12,7 +12,7 @@ namespace MongoDbAccess.Helpers
     {
         private static ConnectionStringHelper? _instance = null;
 
-        private static readonly object padlock = new object();
+        private static readonly object padlock = new();
         public string ConnectionString { get; set; } = "";
         public static ConnectionStringHelper Instance
         {

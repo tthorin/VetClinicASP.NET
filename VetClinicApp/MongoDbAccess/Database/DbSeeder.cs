@@ -9,7 +9,6 @@ namespace MongoDbAccess.Database
     using Interfaces;
     using MongoDB.Driver;
     using System;
-    using static Factory;
     using System.Collections.Generic;
 
     public class DbSeeder : IDbSeeder

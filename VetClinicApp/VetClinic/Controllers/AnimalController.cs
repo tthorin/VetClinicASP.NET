@@ -68,7 +68,7 @@ namespace VetClinic.Controllers
             {
                 var output = ToAnimal(animal);
                 await db.CreateAnimal(output);
-                ViewData["Success"] = $"Animal {animal.Name} added successfully.";
+                ViewData["Success"] = output.Id;
                 return View(animal);
             }
             return View(animal);
@@ -89,8 +89,8 @@ namespace VetClinic.Controllers
         {
             if (ModelState.IsValid)
             {
-                await db.UpdateAnimal(ToAnimal(viewAnimal));
-                ViewData["Success"] = "Animal updated.";
+                var result = await db.UpdateAnimal(ToAnimal(viewAnimal));
+                if (result) ViewData["Success"] = "Animal updated.";
             }
             return View(viewAnimal);
         }
@@ -112,8 +112,8 @@ namespace VetClinic.Controllers
             ViewData["OwnerId"] = animal.OwnerId;
             if (animal.OwnerId != null)
             {
-                await db.DeleteAnimal(ToAnimal(animal));
-                ViewData["Success"] = "Animal deleted.";
+                var result = await db.DeleteAnimal(ToAnimal(animal));
+                if (result) ViewData["Success"] = "Animal deleted.";
             }
             return View();
         }

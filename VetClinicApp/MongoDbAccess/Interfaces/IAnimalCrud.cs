@@ -11,10 +11,10 @@ namespace MongoDbAccess.Interfaces
     public interface IAnimalCrud
     {
         Task CreateAnimal(Models.Animal animal);
-        Task DeleteAnimal(Models.Animal animal);
+        Task<bool> DeleteAnimal(Models.Animal animal);
         Task<List<Models.Animal>> GetAllAnimal();
         Task<Models.Animal> GetAnimalById(string id);
         Task<List<Models.Animal>> GetAnimalsByNameBeginsWith(string searchString);
-        Task UpdateAnimal(Models.Animal animal);
+        Task<bool> UpdateAnimal(Models.Animal animal);
     }
 }

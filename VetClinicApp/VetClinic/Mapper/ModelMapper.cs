@@ -7,14 +7,13 @@ namespace VetClinic.Mapper
 {
     using MongoDbAccess.Models;
     using Models;
-    using static MongoDbAccess.Factory;
 
     internal static class ModelMapper
     {
         internal static Customer ToCustomer(CustomerViewModel vPerson)
         {
-            var output = GetCustomer();
-            
+            var output = new Customer();
+
             if (!string.IsNullOrWhiteSpace(vPerson.Id)) output.Id = vPerson.Id;
             if (!string.IsNullOrWhiteSpace(vPerson.FirstName)) output.FirstName = vPerson.FirstName;
             if (!string.IsNullOrWhiteSpace(vPerson.LastName)) output.LastName = vPerson.LastName;
@@ -26,7 +25,7 @@ namespace VetClinic.Mapper
         internal static CustomerViewModel ToCustomerViewModel(Customer owner)
         {
             var output = new CustomerViewModel();
-            
+
             if (!string.IsNullOrWhiteSpace(owner.Id)) output.Id = owner.Id;
             if (!string.IsNullOrWhiteSpace(owner.FirstName)) output.FirstName = owner.FirstName;
             if (!string.IsNullOrWhiteSpace(owner.LastName)) output.LastName = owner.LastName;

@@ -50,7 +50,7 @@ namespace MongoDbAccess.Database
         public async Task<List<Animal>> GetAnimalsByNameBeginsWith(string searchString)
         {
             var result = await AnimalCollection.FindAsync(x =>
-                x.Name.StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase));
+                x.Name.ToLower().StartsWith(searchString.ToLower()));
             return result.ToList();
         }
 
@@ -74,8 +74,8 @@ namespace MongoDbAccess.Database
         public async Task<List<Customer>> GetCustomersEitherNameBeginsWith(string beginsWith)
         {
             var result = await CustomerCollection.FindAsync(x =>
-                x.LastName.StartsWith(beginsWith, StringComparison.CurrentCultureIgnoreCase) ||
-                x.FirstName.StartsWith(beginsWith, StringComparison.CurrentCultureIgnoreCase));
+                x.LastName.ToLower().StartsWith(beginsWith.ToLower()) ||
+                x.FirstName.ToLower().StartsWith(beginsWith.ToLower()));
             return result.ToList();
         }
 
@@ -92,28 +92,43 @@ namespace MongoDbAccess.Database
             return output.FirstOrDefault();
         }
 
-        public async Task UpdateAnimal(Animal animal)
+        public async Task<bool> UpdateAnimal(Animal animal)
         {
             var filter = Builders<Animal>.Filter.Eq("Id", animal.Id);
-            await AnimalCollection.ReplaceOneAsync(filter, animal, new ReplaceOptions { IsUpsert = true });
-            await CustomerHelper.UpdateAnimalOnCustomer(animal);
+            var result = await AnimalCollection.ReplaceOneAsync(filter, animal, new ReplaceOptions { IsUpsert = true });
+            if (result.IsModifiedCountAvailable && result.ModifiedCount > 0)
+            {
+                await CustomerHelper.UpdateAnimalOnCustomer(animal);
+                return true;
+            }
+            return false;
         }
 
-        public async Task DeleteAnimal(Animal animal)
+        public async Task<bool> DeleteAnimal(Animal animal)
         {
-            await AnimalCollection.DeleteOneAsync(x => x.Id == animal.Id);
-            await CustomerHelper.RemoveAnimalFromCustomer(animal);
+            var result = await AnimalCollection.DeleteOneAsync(x => x.Id == animal.Id);
+            if (result.IsAcknowledged && result.DeletedCount > 0)
+            {
+                await CustomerHelper.RemoveAnimalFromCustomer(animal);
+                return true;
+            }
+            return false;
         }
 
-        public Task UpdateCustomer(Customer owner)
+        public async Task<bool> UpdateCustomer(Customer owner)
         {
             var filter = Builders<Customer>.Filter.Eq("Id", owner.Id);
-            return CustomerCollection.ReplaceOneAsync(filter, owner, new ReplaceOptions { IsUpsert = true });
+            var result = await CustomerCollection.ReplaceOneAsync(filter, owner, new ReplaceOptions { IsUpsert = true });
+            if (result.IsModifiedCountAvailable && result.ModifiedCount > 0) return true;
+            else return false;
         }
 
-        public Task DeleteCustomerById(string id)
+        public async Task<bool> DeleteCustomerById(string id)
         {
-            return CustomerCollection.DeleteOneAsync(x => x.Id == id);
+            await CustomerHelper.DeleteAnimalsTogetherWithCustomer(id);
+            var result = await CustomerCollection.DeleteOneAsync(x => x.Id == id);
+            if (result.IsAcknowledged && result.DeletedCount > 0) return true;
+            else return false;
         }
     }
 }
